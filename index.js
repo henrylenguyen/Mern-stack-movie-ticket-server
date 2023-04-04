@@ -2,10 +2,9 @@ import express from "express";
 const app = express();
 const port = 1812;
 
-
 // get "/" là lấy route mặc định trang chủ
 app.get("/", (req, res) => {
-  res.send('<h1>HÉ LÔ QUƠ RỜ!</h1>');
+  res.send("<h1>Website Xem Phim</h1>");
 });
 
 app.listen(port, () => {
