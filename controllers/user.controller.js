@@ -1,4 +1,5 @@
 import userModel from "../models/user.model.js";
+import bcrypt from "bcryptjs";
 
 export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
   let page = req.query.soTrang;
@@ -8,7 +9,7 @@ export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
     if (page < 1) {
       page = 1;
     }
-    
+
     page = parseInt(page);
     let soLuongBoQua = (page - 1) * PAGE_SIZE;
     try {
@@ -58,7 +59,6 @@ export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
   }
 };
 
-
 // for(let i=1;i<=20;i++){
 //  userModel.create({
 //             taiKhoan:`TaiKhoan ${i}`,
@@ -72,7 +72,6 @@ export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
 //           })
 // }
 export const layDanhSachNguoiDung = (req, res, next) => {
-
   userModel
     .find({})
     .then((data) => {
@@ -83,31 +82,42 @@ export const layDanhSachNguoiDung = (req, res, next) => {
     });
 };
 
-export const themNguoiDung = (req,res,next)=>{
-  const taiKhoan = req.body.taiKhoan;
-  const email = req.body.email;
-  const soDT = req.body.soDT;
-  userModel.findOne({ $or: [{ taiKhoan: taiKhoan }, { email: email },{soDT:soDT}] })
-  .then((user) => {
-    if (user) {
-      // username hoặc email đã tồn tại, trả về thông báo tương ứng
-      if (user.taiKhoan === taiKhoan) {
-        res.status(400).json({ message: "Username đã tồn tại" });
-      } else if(user.email === email) {
-        res.status(400).json({ message: "Email đã tồn tại" });
-      } else{
-        res.status(400).json({ message: "Số điện thoại đã tồn tại" });
+export const themNguoiDung = (req, res, next) => {
+  const { taiKhoan, email, soDT, matKhau, hoTen, diem } = req.body;
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync(matKhau, salt);
+  userModel
+    .findOne({
+      $or: [{ taiKhoan: taiKhoan }, { email: email }, { soDT: soDT }],
+    })
+    .then((user) => {
+      if (user) {
+        // username hoặc email đã tồn tại, trả về thông báo tương ứng
+        if (user.taiKhoan === taiKhoan) {
+          res.status(400).json({ message: "Username đã tồn tại" });
+        } else if (user.email === email) {
+          res.status(400).json({ message: "Email đã tồn tại" });
+        } else {
+          res.status(400).json({ message: "Số điện thoại đã tồn tại" });
+        }
+      } else {
+        // tạo mới người dùng
+        return userModel.create({
+          taiKhoan,
+          matKhau: hashedPassword,
+          hoTen,
+          email,
+          soDT,
+          diem: 0,
+          maLoaiNguoiDung: "642c4edb81233e85462fe9b4",
+          avatar: "",
+        });
       }
-    } else {
-      // tạo mới người dùng
-      // return userModel.create({ username, email });
-    }
-  })
-  .then((user) => {
-    res.json({ message: "Thêm mới thành công" });
-  })
-  .catch((error) => {
-    res.status(500).json({ message: "Lỗi" });
-  });
-
-}
+    })
+    .then((user) => {
+      res.json({ message: "Thêm mới thành công" });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Lỗi" });
+    });
+};

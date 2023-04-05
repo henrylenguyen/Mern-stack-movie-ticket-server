@@ -14,6 +14,7 @@ const accountRouter = Router();
 // Lấy dữ liệu từ db
 accountRouter.get(
   "/layDanhSachNguoiDung",
+  kiemTra,
   layDanhSachNguoiDung
 );
 accountRouter.get("/DanhSachNguoiDungPhanTrang", layDanhSachNguoiDungPhanTrang);

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lấy token</title>
+  <style>
+    body {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    button {
+      cursor: pointer;
+      width: 17rem;
+      height: 6rem;
+      border-radius: 5rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(to right, #f55f8d, #f8ae56, #f55f8d);
+      border: 1px solid;
+      transition: all 0.5s ease;
+      background-size: 200%;
+    }
+
+    button:hover {
+      background-position: right;
+    }
+  </style>
+</head>
+
+<body>
+  <button onclick="handleClick()">Lấy token</button>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    function handleClick() {
+      axios.get('/api/get-token', { withCredentials: true })
+        .then(function (response) {
+          const token = response.data.token;
+          const thoiGianHetHan = response.data.thoiGianHetHan;
+          alert(`Token của bạn là: ${token} và sẽ hết hạn trong ${thoiGianHetHan}`);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    }
+
+  </script>
+</body>
+
+</html>
