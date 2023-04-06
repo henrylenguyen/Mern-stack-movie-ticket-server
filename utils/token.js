@@ -1,0 +1,49 @@
+import jwt from "jsonwebtoken";
+import fs from "fs";
+import cookie from "cookie";
+
+const COOKIE_NAME = "my_app_token";
+
+let token = null;
+let tokenExpire = null;
+
+function generateToken() {
+  const privateKey = fs.readFileSync('./key/private.pem');
+  token = jwt.sign({ name: 'Lê Nguyễn Phương Thái' }, privateKey, { algorithm: 'RS256' });
+  tokenExpire = new Date().getTime() + 24 * 60 * 60 * 1000; // hết hạn sau 1 ngày
+}
+
+function setTokenCookie(res) {
+  const cookieValue = cookie.serialize(COOKIE_NAME, token, {
+    httpOnly: true,
+    expires: new Date(tokenExpire),
+  });
+  res.setHeader("Set-Cookie", cookieValue);
+}
+
+export function getToken(req, res) {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const savedToken = cookies[COOKIE_NAME];
+  if (savedToken && new Date().getTime() <= tokenExpire) {
+    token = savedToken;
+    return token;
+  } else {
+    generateToken();
+    setTokenCookie(res);
+    return token;
+  }
+}
+
+
+export function getTokenRemainingTime() {
+  const currentTime = new Date().getTime();
+  const remainingTime = tokenExpire - currentTime;
+  const seconds = Math.floor(remainingTime / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+
+  const remainingSeconds = seconds % 60;
+  const remainingMinutes = minutes % 60;
+
+  return `${hours} giờ ${remainingMinutes} phút ${remainingSeconds} giây`;
+}

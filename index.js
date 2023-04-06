@@ -1,17 +1,18 @@
-import express from 'express';
-import connectToDatabase from './models/root.modal.js';
-import dotenv from 'dotenv';
-import accountRouter from './routes/user.routes.js';
-import swaggerSetup from './swagger/swagger.js'; // import swaggerSetup từ file swagger.js
-
+import express from "express";
+import connectToDatabase from "./models/root.modal.js";
+import dotenv from "dotenv";
+import accountRouter from "./routes/user.routes.js";
+import swaggerSetup from "./swagger/swagger.js"; // import swaggerSetup từ file swagger.js
+import morgan from "morgan";
+import { fileURLToPath } from 'url';
 dotenv.config();
 const app = express();
-const port =  process.env.PORT
+const port = process.env.PORT;
 import bodyParser from "body-parser";
 import path from "path";
-import jwt from "jsonwebtoken";
-import fs from "fs"
-
+import router from './routes/routes.js';
+const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -28,25 +29,26 @@ app.use((req, res, next) => {
 
 //----------------------------------SERVER----------------------------------------------------------
 async function startServer() {
+  app.use(morgan("dev"));
+
   // Kết nối đến database trước khi khởi động ứng dụng
   await connectToDatabase();
-
-
+  
   // ------------------------SỬ DỤNG ROUTES--------------------------------------
-
+ 
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'token.html'));
+  });
   app.use("/api/QuanLyNguoiDung", accountRouter);
-
+  app.use("/api",router)
   // Set up Swagger middleware
   swaggerSetup(app);
 
-  // sign with RSA SHA256
-  // var privateKey = fs.readFileSync('./key/private.pem');
-  // jwt.sign({ name: 'Lê Nguyễn Phương Thái' }, privateKey, { algorithm: 'RS256' }, function(err, token) {
-  //   console.log(token);
-  // });
   // Khởi động ứng dụng
   app.listen(port, () => {
-    console.log(`Server đang chạy ở cổng http://localhost:${port}, click vào để xem`);
+    console.log(
+      `Server đang chạy ở cổng http://localhost:${port}, click vào để xem`
+    );
   });
 }
 

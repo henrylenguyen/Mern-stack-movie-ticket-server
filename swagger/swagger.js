@@ -2,7 +2,7 @@ import { serve, setup } from 'swagger-ui-express';
 import swaggerDocument from './swagger.json' assert { type: 'json' };
 
 const options = {
-  customSiteTitle: 'API Documentation',
+  customSiteTitle: 'API ĐẶT VÉ XEM PHIM',
   customCss: '.topbar-wrapper img',
   // Add securityDefinitions for JWT authentication
   securityDefinitions: {

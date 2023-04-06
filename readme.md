@@ -68,3 +68,15 @@
   ```
     npm i open
   ```
+
+  # Thư viện mã hóa mật khẩu
+
+  ```
+    npm install bcryptjs
+  ```
+
+  # Thư viện cookie
+
+  ```
+    npm i cookie
+  ```
