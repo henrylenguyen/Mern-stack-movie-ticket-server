@@ -3,10 +3,16 @@ import {
   capNhatThongTinNguoiDung,
   layDanhSachNguoiDung,
   layDanhSachNguoiDungPhanTrang,
-  themNguoiDung,
+  dangKy,
+  xoaNguoiDung,
+  dangNhap,
+  layThongTinNguoiDung,
+  layThongTinTaiKhoan,
+  timKiemNguoiDung,
+  timKiemNguoiDungPhanTrang,
 } from "../controllers/user.controller.js";
 import fs from "fs"
-import kiemTra from "../utils/config.js";
+import {kiemTra, kiemTraTokenNguoiDung} from "../utils/config.js";
 
 
 const accountRouter = Router();
@@ -20,26 +26,29 @@ accountRouter.get(
 );
 accountRouter.get("/DanhSachNguoiDungPhanTrang",kiemTra, layDanhSachNguoiDungPhanTrang);
 
-// Gửi dữ liệu vào db
+// Đăng kí thành viên
 
-accountRouter.post("/themNguoiDung",kiemTra,themNguoiDung)
+accountRouter.post("/dangKy",kiemTra,dangKy)
 
 
 // Cập nhật dữ liệu
 
-accountRouter.put("/capNhatThongTinNguoiDung",kiemTra,capNhatThongTinNguoiDung)
+accountRouter.put("/capNhatThongTinNguoiDung",kiemTra,kiemTraTokenNguoiDung,capNhatThongTinNguoiDung)
 
 // Xóa dữ liệu trong db
 
-accountRouter.delete("/:id",(req,res,next)=>{
-  const id = req.params.id;
-  AccountModel.deleteOne({
-    _id:id
-  }).then(data=>{
-    res.json("Xóa thành công")
-  }).catch(err=>{
-    res.json("Lỗi")
-  })
-})
+accountRouter.delete("/xoaNguoiDung",kiemTra,kiemTraTokenNguoiDung,xoaNguoiDung)
+
+// đăng nhập
+
+accountRouter.post("/dangNhap",kiemTra,dangNhap)
+
+// Lấy thông tin người dùng
+// Lấy 1 dữ liệu từ db
+
+accountRouter.get("/layThongTinNguoiDung",kiemTra,kiemTraTokenNguoiDung,layThongTinNguoiDung)
+accountRouter.get("/layThongTinTaiKhoan",kiemTra,kiemTraTokenNguoiDung,layThongTinTaiKhoan)
+accountRouter.get("/timKiemNguoiDung",kiemTra,kiemTraTokenNguoiDung,timKiemNguoiDung)
+accountRouter.get("/timKiemNguoiDungPhanTrang",kiemTra,kiemTraTokenNguoiDung,timKiemNguoiDungPhanTrang)
 
 export default accountRouter;

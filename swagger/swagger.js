@@ -12,12 +12,21 @@ const options = {
       scheme: 'bearer',
       in: 'header',
     },
+    userTokenAuth: {
+      type: 'apiKey',
+      name: 'userToken',
+      scheme: 'bearer',
+      in: 'header',
+    },
   },
   // Add security for all paths by default
   security: [
     {
       bearerAuth: [],
     },
+    {
+      userTokenAuth: []
+    }
   ],
   definition: {
     openapi: '3.0.0',
@@ -30,6 +39,10 @@ const options = {
         url: 'http://localhost:1812',
         description: 'Local server',
       },
+      {
+        "url": "https://movie-server.herokuapp.com/",
+        "description": "Heroku server"
+      }
     ],
   },
   apis: ['./routes/*.js'],
@@ -37,5 +50,5 @@ const options = {
 
 export default function (app) {
   // Set up Swagger middleware
-  app.use('/api-docs', serve, setup(swaggerDocument, options));
+  app.use('/', serve, setup(swaggerDocument, options));
 };

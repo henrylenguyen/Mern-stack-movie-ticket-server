@@ -1,22 +1,35 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "API Documentation",
+    "title": "API ĐẶT VÉ XEM PHIM",
     "version": "1.0.0"
   },
   "servers": [
     {
       "url": "http://localhost:1812",
       "description": "Local server"
+    },{
+      "url": "https://movie-server.herokuapp.com/",
+      "description": "Heroku server"
     }
   ],
  
   "components": {
     "securitySchemes": {
+      
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "bearerFormat": "JWT",
+        "description": "Token để xác thực hệ thống"
+      },
+      "userToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "userToken",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token để thao tác đến các vấn đề: Sửa, Xóa, Cập Nhật...."
       }
     },
     "schemas": {
@@ -67,7 +80,11 @@
   "security": [
     {
       "bearerAuth": []
+    },
+    {
+      "userToken": []
     }
+    
   ],
   "tags": [
     {
@@ -121,6 +138,12 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "userToken": []
+          },
+          {
+            "systemToken": []
           }
         ],
         "responses": {
@@ -174,9 +197,118 @@
         }
       }
     },
-    "/api/QuanLyNguoiDung/themNguoiDung": {
+    "/api/QuanLyNguoiDung/capNhatThongTinNguoiDung": {
+      "put": {
+        "summary": "Cập nhật thông tin người dùng - dành cho quản trị",
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },{
+            "userToken": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "taiKhoan": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "soDT": {
+                    "type": "string"
+                  },
+                  "matKhau": {
+                    "type": "string"
+                  },
+                  "hoTen": {
+                    "type": "string"
+                  },
+                  "maLoaiNguoiDung": {
+                    "type": "string"
+                  }
+                 
+                },
+                "required": [
+                  "taiKhoan",
+                  "email",
+                  "soDT",
+                  "matKhau",
+                  "hoTen",
+                  "maLoaiNguoiDung"
+                  
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        
+        "responses": {
+          "200": {
+            "description": "User information updated successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/QuanLyNguoiDung/xoaNguoiDung": {
+      "delete": {
+        "summary": "Xóa người dùng",
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "userToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "taiKhoan",
+            "in": "query",
+            "description": "Tài khoản người dùng cần xóa",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa thành công"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    
+    "/api/QuanLyNguoiDung/dangKy": {
       "post": {
-        "summary": "Create a new user",
+        "summary": "Đăng ký thành viên mới",
         "tags": [
           "QuanLyNguoiDung"
         ],
@@ -205,10 +337,8 @@
                   },
                   "hoTen": {
                     "type": "string"
-                  },
-                  "diem": {
-                    "type": "integer"
                   }
+                 
                 },
                 "required": [
                   "taiKhoan",
@@ -239,58 +369,36 @@
         }
       }
     },
-    "/api/QuanLyNguoiDung/capNhatThongTinNguoiDung": {
-      "put": {
-        "summary": "Update user information",
+    "/api/QuanLyNguoiDung/dangNhap": {
+      "post": {
+        "summary": "Đăng nhập",
         "tags": [
           "QuanLyNguoiDung"
         ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "taiKhoan": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string"
-                  },
-                  "soDT": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Tài khoản người dùng"
                   },
                   "matKhau": {
-                    "type": "string"
-                  },
-                  "hoTen": {
-                    "type": "string"
-                  },
-                  "maLoaiNguoiDung": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Mật khẩu người dùng"
                   }
                 },
-                "required": [
-                  "taiKhoan",
-                  "email",
-                  "soDT",
-                  "matKhau",
-                  "hoTen",
-                  "maLoaiNguoiDung"
-                ]
+                "required": ["taiKhoan", "matKhau"]
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
-            "description": "User information updated successfully"
+            "description": "Đăng nhập thành công"
           },
           "400": {
             "description": "Bad request"
@@ -303,7 +411,179 @@
           }
         }
       }
+    },
+    "/api/QuanLyNguoiDung/layThongTinNguoiDung": {
+      "get": {
+        "summary": "Lấy thông tin người dùng",
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "userToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "taiKhoan",
+            "in": "query",
+            "description": "Tài khoản người dùng cần lấy thông tin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy thông tin thành công"
+            
+          },
+          "404": {
+            "description": "Không tìm thấy người dùng"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/QuanLyNguoiDung/layThongTinTaiKhoan": {
+      "get": {
+        "summary": "Lấy thông tin tài khoản của người dùng đang đăng nhập",
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "userToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy thông tin thành công"
+          },
+          "401": {
+            "description": "Token không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy người dùng"
+          },
+          "500": {
+            "description": "Lỗi server"
+          }
+        }
+      }
+    },
+    "/api/QuanLyNguoiDung/timKiemNguoiDung": {
+      "get": {
+        "summary": "Tìm kiếm người dùng theo tài khoản (nếu có)",
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "userToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "taiKhoan",
+            "in": "query",
+            "description": "Tài khoản người dùng cần tìm kiếm",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tìm kiếm dữ liệu thành công"
+          },
+          "401": {
+            "description": "Token không hợp lệ"
+          },
+          "500": {
+            "description": "Lỗi server"
+          }
+        }
+      }
+    },
+    "/api/QuanLyNguoiDung/timKiemNguoiDungPhanTrang": {
+      "get": {
+        "summary": "Tìm kiếm người dùng phân trang theo thông tin",
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "userToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "taiKhoan",
+            "in": "query",
+            "description": "Tài khoản người dùng cần tìm kiếm",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "soTrang",
+            "in": "query",
+            "description": "Số trang",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "SoPhanTuTrenTrang",
+            "in": "query",
+            "description": "Số phần tử trên trang",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tìm kiếm dữ liệu thành công"
+            
+          },
+          "401": {
+            "description": "Token không hợp lệ"
+          },
+          "500": {
+            "description": "Lỗi server"
+          }
+        }
+      }
     }
+    
+    
+    
+    
+    
+    
     
     
   }
