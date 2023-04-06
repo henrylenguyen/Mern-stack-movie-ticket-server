@@ -174,9 +174,9 @@
         }
       }
     },
-    "/api/QuanLyNguoiDung/themNguoiDung": {
+    "/api/QuanLyNguoiDung/dangKy": {
       "post": {
-        "summary": "Create a new user",
+        "summary": "Đăng ký thành viên mới",
         "tags": [
           "QuanLyNguoiDung"
         ],
@@ -205,10 +205,8 @@
                   },
                   "hoTen": {
                     "type": "string"
-                  },
-                  "diem": {
-                    "type": "integer"
                   }
+                 
                 },
                 "required": [
                   "taiKhoan",
@@ -241,7 +239,7 @@
     },
     "/api/QuanLyNguoiDung/capNhatThongTinNguoiDung": {
       "put": {
-        "summary": "Update user information",
+        "summary": "Cập nhật thông tin người dùng - dành cho quản trị",
         "tags": [
           "QuanLyNguoiDung"
         ],

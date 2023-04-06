@@ -37,5 +37,5 @@ const options = {
 
 export default function (app) {
   // Set up Swagger middleware
-  app.use('/api-docs', serve, setup(swaggerDocument, options));
+  app.use('/', serve, setup(swaggerDocument, options));
 };

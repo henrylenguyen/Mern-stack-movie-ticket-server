@@ -3,7 +3,9 @@ import {
   capNhatThongTinNguoiDung,
   layDanhSachNguoiDung,
   layDanhSachNguoiDungPhanTrang,
-  themNguoiDung,
+  dangKy,
+  xoaNguoiDung,
+  dangNhap,
 } from "../controllers/user.controller.js";
 import fs from "fs"
 import kiemTra from "../utils/config.js";
@@ -20,9 +22,9 @@ accountRouter.get(
 );
 accountRouter.get("/DanhSachNguoiDungPhanTrang",kiemTra, layDanhSachNguoiDungPhanTrang);
 
-// Gửi dữ liệu vào db
+// Đăng kí thành viên
 
-accountRouter.post("/themNguoiDung",kiemTra,themNguoiDung)
+accountRouter.post("/dangKy",dangKy)
 
 
 // Cập nhật dữ liệu
@@ -31,15 +33,10 @@ accountRouter.put("/capNhatThongTinNguoiDung",kiemTra,capNhatThongTinNguoiDung)
 
 // Xóa dữ liệu trong db
 
-accountRouter.delete("/:id",(req,res,next)=>{
-  const id = req.params.id;
-  AccountModel.deleteOne({
-    _id:id
-  }).then(data=>{
-    res.json("Xóa thành công")
-  }).catch(err=>{
-    res.json("Lỗi")
-  })
-})
+accountRouter.delete("/xoaNguoiDung",kiemTra,xoaNguoiDung)
+
+// đăng nhập
+
+accountRouter.post("/dangNhap",dangNhap)
 
 export default accountRouter;

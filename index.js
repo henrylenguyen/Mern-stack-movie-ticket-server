@@ -36,9 +36,9 @@ async function startServer() {
   
   // ------------------------SỬ DỤNG ROUTES--------------------------------------
  
-  app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'token.html'));
-  });
+  // app.get('/', (req, res) => {
+  //   res.sendFile(path.join(__dirname, 'token.html'));
+  // });
   app.use("/api/QuanLyNguoiDung", accountRouter);
   app.use("/api",router)
   // Set up Swagger middleware

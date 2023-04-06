@@ -1,6 +1,7 @@
 import roleModel from "../models/role.model.js";
 import userModel from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import jwt  from 'jsonwebtoken';
 
 // -------------------------------LẤY NGƯỜI DÙNG PHÂN TRANG-------------------------------------------
 export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
@@ -106,9 +107,10 @@ export const layDanhSachNguoiDung = (req, res, next) => {
     });
 };
 
-// -------------------------------THÊM NGƯỜI DÙNG-------------------------------------------
-export const themNguoiDung = (req, res, next) => {
-  const { taiKhoan, email, soDT, matKhau, hoTen, diem } = req.body;
+// ------------------------------------ĐĂNG KÝ THÀNH VIÊN MỚI -------------------------------------
+
+export const dangKy = (req, res, next) => {
+  const { taiKhoan, email, soDT, matKhau, hoTen } = req.body;
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(matKhau, salt);
   userModel
@@ -146,6 +148,44 @@ export const themNguoiDung = (req, res, next) => {
       res.status(500).json({ message: "Lỗi" });
     });
 };
+
+
+// ------------------------------------ĐĂNG NHẬP THÀNH VIÊN -------------------------------------
+
+export const dangNhap = async (req, res, next) => {
+  const { taiKhoan, matKhau } = req.body;
+  try {
+    // console.log("Đang tìm user trong database");
+    const user = await userModel.findOne({ taiKhoan });
+    // console.log("Đã tìm thấy: ", user);
+    if (!user) {
+      return res.status(401).json({ message: "Tài khoản không tồn tại" });
+    }
+    // console.log("Đang giải mã...");
+    const isMatch = bcrypt.compareSync(matKhau, user.matKhau);
+    // console.log("Passwords compared: ", isMatch);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Mật khẩu không đúng" });
+    }
+    // console.log("Tạo token gửi lên client...");
+    const token = jwt.sign(
+      { userId: user._id, taiKhoan: user.taiKhoan },
+      "sadfsadsdfsd345kzhxkcyadqalwem14124zk",
+      { expiresIn: "7d" }
+    );
+    // console.log("Token generated: ", token);
+    res.status(200).json({ message: "Đăng nhập thành công", content:{
+      user,
+      token
+    } });
+  } catch (error) {
+    console.error("Error occurred: ", error);
+    res.status(500).json({ message: "Lỗi" });
+  }
+};
+
+
+
 // -------------------------------CẬP NHẬT NGƯỜI DÙNG-------------------------------------------
 
 export const capNhatThongTinNguoiDung = async (req, res, next) => {
@@ -180,3 +220,22 @@ export const capNhatThongTinNguoiDung = async (req, res, next) => {
 };
 
 // -------------------------------CẬP NHẬT THÔNG TIN TÀI KHOẢN-----------------------------------
+
+
+// ------------------------------- XÓA NGƯỜI DÙNG-------------------------------------------------
+// Xóa dữ liệu trong db
+
+export const xoaNguoiDung = (req,res,next)=>{
+  const taiKhoan = req.query.taiKhoan;
+
+  userModel.deleteOne({
+    taiKhoan: taiKhoan
+  }).then(data=>{
+    res.json("Xóa thành công")
+  }).catch(err=>{
+    res.json("Lỗi")
+  })
+}
+
+
+
