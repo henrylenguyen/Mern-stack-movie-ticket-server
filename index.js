@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
 app.use(bodyParser.json());
-app.use(corsMiddleware);
+// app.use(corsMiddleware);
 // CORS middleware
 app.use((req, res, next) => {
   res.header(`Access-Control-Allow-Origin`, `*`);
