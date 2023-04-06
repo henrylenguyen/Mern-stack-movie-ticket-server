@@ -3,9 +3,10 @@ import { Router } from "express";
 const flimRouter = Router();
 
 // Lấy dữ liệu từ db
-
+flimRouter.get("/layDanhSachPhim", layDanhSachPhim);
+flimRouter.get("/DanhSachPhimPhanTrang", layDanhSachPhimPhanTrang);
 // Gửi dữ liệu vào db
-
+flimRouter.post("/themPhim", themPhim);
 // Cập nhật dữ liệu
 
 flimRouter.put("/:id", (req, res, next) => {
