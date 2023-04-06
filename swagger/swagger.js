@@ -39,6 +39,10 @@ const options = {
         url: 'http://localhost:1812',
         description: 'Local server',
       },
+      {
+        "url": "https://movie-server.herokuapp.com/",
+        "description": "Heroku server"
+      }
     ],
   },
   apis: ['./routes/*.js'],
