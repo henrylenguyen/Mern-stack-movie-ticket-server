@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import accountRouter from "./routes/user.routes.js";
 import swaggerSetup from "./swagger/swagger.js"; // import swaggerSetup từ file swagger.js
 import morgan from "morgan";
+import corsMiddleware from './utils/cors.js';
 import { fileURLToPath } from 'url';
 dotenv.config();
 const app = express();
@@ -18,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
 app.use(bodyParser.json());
-
+app.use(corsMiddleware);
 // CORS middleware
 app.use((req, res, next) => {
   res.header(`Access-Control-Allow-Origin`, `*`);

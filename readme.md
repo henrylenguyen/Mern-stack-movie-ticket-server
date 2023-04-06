@@ -80,3 +80,9 @@
   ```
     npm i cookie
   ```
+  # Thư viện cors
+
+  ```
+    npm install cors
+
+  ```
