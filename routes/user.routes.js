@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  capNhatThongTinNguoiDung,
   layDanhSachNguoiDung,
   layDanhSachNguoiDungPhanTrang,
   themNguoiDung,
@@ -17,26 +18,16 @@ accountRouter.get(
   kiemTra,
   layDanhSachNguoiDung
 );
-accountRouter.get("/DanhSachNguoiDungPhanTrang", layDanhSachNguoiDungPhanTrang);
+accountRouter.get("/DanhSachNguoiDungPhanTrang",kiemTra, layDanhSachNguoiDungPhanTrang);
 
 // Gửi dữ liệu vào db
 
-accountRouter.post("/themNguoiDung",themNguoiDung)
+accountRouter.post("/themNguoiDung",kiemTra,themNguoiDung)
 
 
 // Cập nhật dữ liệu
 
-accountRouter.put("/:id",(req,res,next)=>{
-  var id = req.params.id;
-  var password = req.body.password;
-  AccountModel.findByIdAndUpdate(id,{
-    password:password
-  }).then(data=>{
-    res.json("Cập nhật thành công")
-  }).catch(err=>{
-    res.json("Lỗi")
-  })
-})
+accountRouter.put("/capNhatThongTinNguoiDung",kiemTra,capNhatThongTinNguoiDung)
 
 // Xóa dữ liệu trong db
 

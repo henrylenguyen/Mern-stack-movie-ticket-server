@@ -1,5 +1,8 @@
+import roleModel from "../models/role.model.js";
 import userModel from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+
+// -------------------------------LẤY NGƯỜI DÙNG PHÂN TRANG-------------------------------------------
 
 export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
   let page = req.query.soTrang;
@@ -31,7 +34,15 @@ export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
       } else if (total - soLuongBoQua < PAGE_SIZE) {
         soLuongPhanTuHienTai = total - soLuongBoQua;
       }
-      const data = await userModel.find({}).skip(soLuongBoQua).limit(PAGE_SIZE);
+      const data = await userModel
+        .find({})
+        .populate({
+          path: "maLoaiNguoiDung",
+          model: roleModel,
+          select: "-_id ten",
+        })
+        .skip(soLuongBoQua)
+        .limit(PAGE_SIZE);
       let tongSoTrang = Math.ceil(total / PAGE_SIZE);
       if (page > tongSoTrang) {
         return res.json({
@@ -59,21 +70,18 @@ export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
   }
 };
 
-// for(let i=1;i<=20;i++){
-//  userModel.create({
-//             taiKhoan:`TaiKhoan ${i}`,
-//             matKhau: "123456",
-//             hoTen: `Lê Nguyễn Phương Thái ${i}`,
-//             email: `abc${i}@gmail.com`,
-//             soDT: `01234567${i}`,
-//             maLoaiNguoiDung: "642c4edb81233e85462fe9b4",
-//             diem: 1,
-//             avatar: ""
-//           })
-// }
+// -------------------------------LẤY TOÀN BỘ NGƯỜI DÙNG-------------------------------------------
+
 export const layDanhSachNguoiDung = (req, res, next) => {
   userModel
+    // muốn populate trường nào thì truyền tên trường đó vào + với tên model tham chiếu
+    // nếu muốn loại bỏ cột nào không cần populate thì chỉ cần -cột là được
     .find({})
+    .populate({
+      path: "maLoaiNguoiDung",
+      model: roleModel,
+      select: "-_id ten",
+    })
     .then((data) => {
       res.json(data);
     })
@@ -82,6 +90,7 @@ export const layDanhSachNguoiDung = (req, res, next) => {
     });
 };
 
+// -------------------------------THÊM NGƯỜI DÙNG-------------------------------------------
 export const themNguoiDung = (req, res, next) => {
   const { taiKhoan, email, soDT, matKhau, hoTen, diem } = req.body;
   const salt = bcrypt.genSaltSync(10);
@@ -121,3 +130,37 @@ export const themNguoiDung = (req, res, next) => {
       res.status(500).json({ message: "Lỗi" });
     });
 };
+// -------------------------------CẬP NHẬT NGƯỜI DÙNG-------------------------------------------
+
+export const capNhatThongTinNguoiDung = async (req, res, next) => {
+  const { taiKhoan, email, soDT, matKhau, hoTen, maLoaiNguoiDung } = req.body;
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync(matKhau, salt);
+  try {
+    const foundUser = await userModel.findOne({ taiKhoan });
+    console.log(foundUser);
+    if (!foundUser) {
+      return res.status(404).json({ message: "Tài khoản không tồn tại" });
+    }
+    if (maLoaiNguoiDung === "NhanVien") {
+      foundUser.maLoaiNguoiDung = "642c4eea81233e85462fe9b5";
+    } else if (maLoaiNguoiDung === "QuanTri") {
+      foundUser.maLoaiNguoiDung = "642c4ebc81233e85462fe9b3";
+    } else if (maLoaiNguoiDung === "QuanLy") {
+      foundUser.maLoaiNguoiDung = "642c4f3b81233e85462fe9b7";
+    } else {
+      foundUser.maLoaiNguoiDung = "642c4edb81233e85462fe9b4";
+    }
+    foundUser.matKhau = hashedPassword;
+    foundUser.email = email;
+    foundUser.soDT = soDT;
+    foundUser.hoTen = hoTen;
+    await foundUser.save();
+
+    res.json({ message: "Cập nhật thành công" });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi" });
+  }
+};
+
+// -------------------------------CẬP NHẬT THÔNG TIN TÀI KHOẢN-----------------------------------

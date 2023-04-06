@@ -14,7 +14,10 @@ const Schema = _Schema;
   hoTen: String,
   email: String,
   soDT: String,
-  maLoaiNguoiDung: String,
+  maLoaiNguoiDung: {
+    type: String,
+    ref: "phanQuyen" // đối chiếu đến tên của model
+  },
   diem: Number,
   avatar:String
 },{
