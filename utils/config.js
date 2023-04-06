@@ -1,7 +1,7 @@
 import fs from "fs";
 import jwt  from 'jsonwebtoken';
 
-const kiemTra = (req, res, next) => {
+export const kiemTra = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   // bearer  
   const token = authHeader && authHeader.split(" ")[1];
@@ -33,4 +33,19 @@ const kiemTra = (req, res, next) => {
 }
 
 
-export default kiemTra;
+export const kiemTraTokenNguoiDung = async (req, res, next) => {
+  const authHeader = req.headers["usertoken"];
+  if (!authHeader) {
+    return res.status(401).json({ message: "Token không hợp lệ" });
+  }
+  const token = authHeader.split(" ")[1];
+  try {
+    const decoded = jwt.verify(token, process.env.TOKEN_USER);
+    req.userData = decoded;
+    next();
+  } catch (err) {
+    console.error("Error occurred: ", err);
+    return res.status(500).json({ message: "Lỗi" });
+  }
+};
+

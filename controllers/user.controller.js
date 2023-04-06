@@ -170,16 +170,14 @@ export const dangNhap = async (req, res, next) => {
     // console.log("Tạo token gửi lên client...");
     const token = jwt.sign(
       { userId: user._id, taiKhoan: user.taiKhoan },
-      "sadfsadsdfsd345kzhxkcyadqalwem14124zk",
+      process.env.TOKEN_USER,
       { expiresIn: "7d" }
     );
     // console.log("Token generated: ", token);
     res.status(200).json({ message: "Đăng nhập thành công", content:{
-      user,
       token
     } });
   } catch (error) {
-    console.error("Error occurred: ", error);
     res.status(500).json({ message: "Lỗi" });
   }
 };
@@ -196,7 +194,7 @@ export const capNhatThongTinNguoiDung = async (req, res, next) => {
     const foundUser = await userModel.findOne({ taiKhoan });
     console.log(foundUser);
     if (!foundUser) {
-      return res.status(404).json({ message: "Tài khoản không tồn tại" });
+      return res.status(401).json({ message: "Tài khoản không tồn tại" });
     }
     if (maLoaiNguoiDung === "NhanVien") {
       foundUser.maLoaiNguoiDung = "642c4eea81233e85462fe9b5";
@@ -213,7 +211,7 @@ export const capNhatThongTinNguoiDung = async (req, res, next) => {
     foundUser.hoTen = hoTen;
     await foundUser.save();
 
-    res.json({ message: "Cập nhật thành công" });
+    res.status(200).json({ message: "Cập nhật thành công" });
   } catch (error) {
     res.status(500).json({ message: "Lỗi" });
   }
@@ -223,7 +221,7 @@ export const capNhatThongTinNguoiDung = async (req, res, next) => {
 
 
 // ------------------------------- XÓA NGƯỜI DÙNG-------------------------------------------------
-// Xóa dữ liệu trong db
+
 
 export const xoaNguoiDung = (req,res,next)=>{
   const taiKhoan = req.query.taiKhoan;
@@ -231,11 +229,39 @@ export const xoaNguoiDung = (req,res,next)=>{
   userModel.deleteOne({
     taiKhoan: taiKhoan
   }).then(data=>{
-    res.json("Xóa thành công")
+    res.status(200).json("Xóa thành công")
   }).catch(err=>{
     res.json("Lỗi")
   })
 }
 
+// -------------------------------- LẤY THÔNG TIN NGƯỜI DÙNG ------------------------------------
 
+export const layThongTinNguoiDung = async (req, res, next) => {
+  const taiKhoan = req.query.taiKhoan;
+  try {
+  const user = await userModel.findOne({ taiKhoan }, { _id: 0, matKhau: 0 });
+  if (!user) {
+  return res.status(404).json({ message: "Không tìm thấy người dùng" });
+  }
+  res.json(user);
+  } catch (error) {
+  // console.error("Error occurred: ", error);
+  res.status(500).json({ message: "Lỗi" });
+  }
+  };
+// -------------------------------- LẤY THÔNG TIN TÀI KHOẢN ĐANG ĐĂNG NHẬP ------------------------------------
 
+export const layThongTinTaiKhoan = async (req, res, next) => {
+  const userId = req.userData.userId;
+  try {
+    const user = await userModel.findById(userId, { _id: 0, matKhau: 0 });
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error occurred: ", error);
+    res.status(500).json({ message: "Lỗi" });
+  }
+};

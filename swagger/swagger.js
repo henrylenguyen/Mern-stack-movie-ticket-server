@@ -12,12 +12,21 @@ const options = {
       scheme: 'bearer',
       in: 'header',
     },
+    userTokenAuth: {
+      type: 'apiKey',
+      name: 'userToken',
+      scheme: 'bearer',
+      in: 'header',
+    },
   },
   // Add security for all paths by default
   security: [
     {
       bearerAuth: [],
     },
+    {
+      userTokenAuth: []
+    }
   ],
   definition: {
     openapi: '3.0.0',
