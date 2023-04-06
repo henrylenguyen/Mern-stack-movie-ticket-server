@@ -8,6 +8,8 @@ import {
   dangNhap,
   layThongTinNguoiDung,
   layThongTinTaiKhoan,
+  timKiemNguoiDung,
+  timKiemNguoiDungPhanTrang,
 } from "../controllers/user.controller.js";
 import fs from "fs"
 import {kiemTra, kiemTraTokenNguoiDung} from "../utils/config.js";
@@ -46,5 +48,7 @@ accountRouter.post("/dangNhap",kiemTra,dangNhap)
 
 accountRouter.get("/layThongTinNguoiDung",kiemTra,kiemTraTokenNguoiDung,layThongTinNguoiDung)
 accountRouter.get("/layThongTinTaiKhoan",kiemTra,kiemTraTokenNguoiDung,layThongTinTaiKhoan)
+accountRouter.get("/timKiemNguoiDung",kiemTra,kiemTraTokenNguoiDung,timKiemNguoiDung)
+accountRouter.get("/timKiemNguoiDungPhanTrang",kiemTra,kiemTraTokenNguoiDung,timKiemNguoiDungPhanTrang)
 
 export default accountRouter;

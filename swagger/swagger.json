@@ -477,7 +477,106 @@
           }
         }
       }
+    },
+    "/api/QuanLyNguoiDung/timKiemNguoiDung": {
+      "get": {
+        "summary": "Tìm kiếm người dùng theo tài khoản (nếu có)",
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "userToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "taiKhoan",
+            "in": "query",
+            "description": "Tài khoản người dùng cần tìm kiếm",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tìm kiếm dữ liệu thành công"
+          },
+          "401": {
+            "description": "Token không hợp lệ"
+          },
+          "500": {
+            "description": "Lỗi server"
+          }
+        }
+      }
+    },
+    "/api/QuanLyNguoiDung/timKiemNguoiDungPhanTrang": {
+      "get": {
+        "summary": "Tìm kiếm người dùng phân trang theo thông tin",
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "userToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "taiKhoan",
+            "in": "query",
+            "description": "Tài khoản người dùng cần tìm kiếm",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "soTrang",
+            "in": "query",
+            "description": "Số trang",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "SoPhanTuTrenTrang",
+            "in": "query",
+            "description": "Số phần tử trên trang",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tìm kiếm dữ liệu thành công"
+            
+          },
+          "401": {
+            "description": "Token không hợp lệ"
+          },
+          "500": {
+            "description": "Lỗi server"
+          }
+        }
+      }
     }
+    
+    
     
     
     

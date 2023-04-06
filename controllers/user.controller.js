@@ -35,7 +35,7 @@ export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
         soLuongPhanTuHienTai = total - soLuongBoQua;
       }
       const data = await userModel
-        .find({})
+        .find({}, { _id: 0, matKhau: 0}).select("-__v")
         .populate({
           path: "maLoaiNguoiDung",
           model: roleModel,
@@ -83,12 +83,12 @@ export const layDanhSachNguoiDung = (req, res, next) => {
   userModel
     // muốn populate trường nào thì truyền tên trường đó vào + với tên model tham chiếu
     // nếu muốn loại bỏ cột nào không cần populate thì chỉ cần -cột là được
-    .find({})
+    .find({}, { _id: 0, matKhau: 0 })
     .populate({
       path: "maLoaiNguoiDung",
       model: roleModel,
       select: "-_id ten",
-    })
+    }).select("-__v") // dùng để bỏ kí tự
     .lean() // chuyển đổi dữ liệu thành đối tượng JavaScript thuần túy
     .then((data) => {
       data = data.map((user) => {
@@ -240,7 +240,7 @@ export const xoaNguoiDung = (req,res,next)=>{
 export const layThongTinNguoiDung = async (req, res, next) => {
   const taiKhoan = req.query.taiKhoan;
   try {
-  const user = await userModel.findOne({ taiKhoan }, { _id: 0, matKhau: 0 });
+  const user = await userModel.findOne({ taiKhoan }, { _id: 0, matKhau: 0 }).select("-__v") ;
   if (!user) {
   return res.status(404).json({ message: "Không tìm thấy người dùng" });
   }
@@ -255,13 +255,112 @@ export const layThongTinNguoiDung = async (req, res, next) => {
 export const layThongTinTaiKhoan = async (req, res, next) => {
   const userId = req.userData.userId;
   try {
-    const user = await userModel.findById(userId, { _id: 0, matKhau: 0 });
+    const user = await userModel.findById(userId, { _id: 0, matKhau: 0 }).select("-__v") ;
     if (!user) {
       return res.status(404).json({ message: "Không tìm thấy người dùng" });
     }
-    res.status(200).json(user);
+    res.status(200).json({
+      message: "Lấy thông tin thành công",
+      content: user
+    });
   } catch (error) {
     console.error("Error occurred: ", error);
     res.status(500).json({ message: "Lỗi" });
+  }
+};
+
+// ------------------------------- TÌM KIẾM NGƯỜI DÙNG --------------------------------------------
+export const timKiemNguoiDung = async (req, res, next) => {
+  const { taiKhoan } = req.query;
+  try {
+    let data;
+    if (taiKhoan) {
+      data = await userModel
+        .find({ taiKhoan }, { _id: 0, matKhau: 0 })
+        .populate({
+          path: "maLoaiNguoiDung",
+          model: roleModel,
+          select: "-_id ten",
+        })
+        .lean();
+    } else {
+      data = await userModel
+        .find({}, { _id: 0, matKhau: 0 })
+        .populate({
+          path: "maLoaiNguoiDung",
+          model: roleModel,
+          select: "-_id ten",
+        })
+        .select("-__v") 
+        .lean();
+    }
+    data = data.map((user) => {
+      user.maLoaiNguoiDung = user.maLoaiNguoiDung.ten;
+      return user;
+    });
+    res.json({
+      message: "Tìm kiếm dữ liệu thành công",
+      content: data,
+    });
+  } catch (err) {
+    res.json("Lỗi");
+  }
+};
+
+// ------------------------------- TÌM KIẾM NGƯỜI DÙNG PHÂN TRANG --------------------------------
+
+
+export const timKiemNguoiDungPhanTrang = async (req, res, next) => {
+  const page = req.query.soTrang;
+  const pageSize = req.query.SoPhanTuTrenTrang;
+  const taiKhoan = req.query.taiKhoan;
+  let query = {};
+
+  if (taiKhoan) {
+    query = { taiKhoan: { $regex: taiKhoan, $options: "i" } };
+  }
+
+  try {
+    const total = await userModel.countDocuments(query);
+    const totalPages = Math.ceil(total / pageSize);
+    let currentPage = parseInt(page);
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    } else if (currentPage < 1) {
+      currentPage = 1;
+    }
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = currentPage * pageSize;
+
+    const data = await userModel
+      .find(query, { _id: 0, matKhau: 0 })
+      .populate({
+        path: "maLoaiNguoiDung",
+        model: roleModel,
+        select: "-_id ten",
+      })
+      .select("-__v")
+      .lean()
+      .skip(startIndex)
+      .limit(pageSize);
+
+    data.forEach((user) => {
+      user.maLoaiNguoiDung = user.maLoaiNguoiDung.ten;
+    });
+
+    const response = {
+      message: "Lấy dữ liệu thành công",
+      content: {
+        tongSoTrang: totalPages,
+        trangHienTai: currentPage,
+        tongSoLuongHienCo: total,
+        soPhanTuHienTai: data.length,
+        data: data,
+      },
+    };
+
+    res.json(response);
+  } catch (err) {
+    res.json({ message: "Lỗi", error: err });
   }
 };
