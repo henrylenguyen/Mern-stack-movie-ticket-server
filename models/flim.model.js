@@ -25,6 +25,7 @@ const flimSchema = new Schema(
 );
 
 // tên + schema
+
 const flimModel = model("flim", flimSchema);
 
 export default flimModel;
