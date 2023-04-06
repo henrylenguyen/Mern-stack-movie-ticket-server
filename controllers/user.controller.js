@@ -3,7 +3,6 @@ import userModel from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 
 // -------------------------------LẤY NGƯỜI DÙNG PHÂN TRANG-------------------------------------------
-
 export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
   let page = req.query.soTrang;
   let PAGE_SIZE = req.query.SoPhanTuTrenTrang;
@@ -41,11 +40,16 @@ export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
           model: roleModel,
           select: "-_id ten",
         })
+        .lean() // chuyển đổi dữ liệu thành đối tượng JavaScript thuần túy
         .skip(soLuongBoQua)
         .limit(PAGE_SIZE);
+      data.forEach((user) => {
+        user.maLoaiNguoiDung = user.maLoaiNguoiDung.ten;
+      });
       let tongSoTrang = Math.ceil(total / PAGE_SIZE);
       if (page > tongSoTrang) {
         return res.json({
+          message: "Lấy dữ liệu thành công",
           content: {
             tongSoTrang: tongSoTrang,
             trangHienTai: page,
@@ -56,6 +60,7 @@ export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
         });
       }
       res.json({
+        message: "Lấy dữ liệu thành công",
         content: {
           tongSoTrang: tongSoTrang,
           trangHienTai: page,
@@ -70,6 +75,7 @@ export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
   }
 };
 
+
 // -------------------------------LẤY TOÀN BỘ NGƯỜI DÙNG-------------------------------------------
 
 export const layDanhSachNguoiDung = (req, res, next) => {
@@ -82,8 +88,18 @@ export const layDanhSachNguoiDung = (req, res, next) => {
       model: roleModel,
       select: "-_id ten",
     })
+    .lean() // chuyển đổi dữ liệu thành đối tượng JavaScript thuần túy
     .then((data) => {
-      res.json(data);
+      data = data.map((user) => {
+        user.maLoaiNguoiDung = user.maLoaiNguoiDung.ten;
+        return user;
+      });
+      res.json({
+        message: "Lấy dữ liệu thành công",
+        content: {
+          data
+        }
+      });
     })
     .catch((err) => {
       res.json("Lỗi");

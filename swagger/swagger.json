@@ -10,6 +10,7 @@
       "description": "Local server"
     }
   ],
+ 
   "components": {
     "securitySchemes": {
       "bearerAuth": {
@@ -68,27 +69,52 @@
       "bearerAuth": []
     }
   ],
+  "tags": [
+    {
+      "name": "QuanLyNguoiDung",
+      "description": "APIs quản lý người dùng"
+    },
+    {
+      "name": "QuanLyPhim",
+      "description": "APIS quản lý phim"
+    },
+    {
+      "name": "QuanLyDatVe",
+      "description": "APIS quản lý vé xem phim"
+    },
+    {
+      "name": "QuanLyRap",
+      "description": "APIS quản lý rạp chiếu phim"
+    }
+  ],
   "paths": {
+  
+  
     "/api/QuanLyNguoiDung/DanhSachNguoiDungPhanTrang": {
       "get": {
         "summary": "Get a list of users",
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
         "parameters": [
           {
             "name": "soTrang",
             "in": "query",
-            "description": "The page number to retrieve",
+            "description": "Số trang hiện tại",
             "required": false,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "default": 1 
             }
           },
           {
             "name": "SoPhanTuTrenTrang",
             "in": "query",
-            "description": "The number of items to retrieve per page",
+            "description": "Số phần tử cần hiển thị trên trang",
             "required": false,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "default": 10 
             }
           }
         ],
@@ -99,7 +125,7 @@
         ],
         "responses": {
           "200": {
-            "description": "List of users",
+            "description": "Danh sách người dùng đã phân trang",
             "content": {
               "application/json": {
                 "schema": {
@@ -120,6 +146,9 @@
     "/api/QuanLyNguoiDung/layDanhSachNguoiDung": {
       "get": {
         "summary": "Lấy danh sách người dùng",
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -148,6 +177,9 @@
     "/api/QuanLyNguoiDung/themNguoiDung": {
       "post": {
         "summary": "Create a new user",
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -210,6 +242,9 @@
     "/api/QuanLyNguoiDung/capNhatThongTinNguoiDung": {
       "put": {
         "summary": "Update user information",
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
         "security": [
           {
             "bearerAuth": []
