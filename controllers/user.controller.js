@@ -115,8 +115,14 @@ export const layDanhSachNguoiDung = (req, res, next) => {
 
 export const dangKy = (req, res, next) => {
   const { taiKhoan, email, soDT, matKhau, hoTen } = req.body;
+
+  if (!taiKhoan || !email || !soDT || !matKhau || !hoTen) {
+    return res.status(400).json({ message: "Thiếu thông tin đăng ký" });
+  }
+
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(matKhau, salt);
+
   userModel
     .findOne({
       $or: [{ taiKhoan: taiKhoan }, { email: email }, { soDT: soDT }],
@@ -125,11 +131,11 @@ export const dangKy = (req, res, next) => {
       if (user) {
         // username hoặc email đã tồn tại, trả về thông báo tương ứng
         if (user.taiKhoan === taiKhoan) {
-          res.status(400).json({ message: "Username đã tồn tại" });
+          return res.status(400).json({ message: "Username đã tồn tại" });
         } else if (user.email === email) {
-          res.status(400).json({ message: "Email đã tồn tại" });
+          return res.status(400).json({ message: "Email đã tồn tại" });
         } else {
-          res.status(400).json({ message: "Số điện thoại đã tồn tại" });
+          return res.status(400).json({ message: "Số điện thoại đã tồn tại" });
         }
       } else {
         // tạo mới người dùng
@@ -149,9 +155,11 @@ export const dangKy = (req, res, next) => {
       res.json({ message: "Thêm mới thành công" });
     })
     .catch((error) => {
+      console.error(error);
       res.status(500).json({ message: "Lỗi" });
     });
 };
+
 
 
 // ------------------------------------ĐĂNG NHẬP THÀNH VIÊN -------------------------------------
