@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import accountRouter from "./routes/user.routes.js";
 import swaggerSetup from "./swagger/swagger.js"; // import swaggerSetup từ file swagger.js
 import morgan from "morgan";
-import corsMiddleware from './utils/cors.js';
+import cors from 'cors';
 import { fileURLToPath } from 'url';
 dotenv.config();
 const app = express();
@@ -23,10 +23,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // app.use(corsMiddleware);
 // CORS middleware
+app.use(cors())
 app.use((req, res, next) => {
   res.header(`Access-Control-Allow-Origin`, `*`);
   res.header(`Access-Control-Allow-Methods`, `GET,PUT,POST,DELETE`);
-  res.header(`Access-Control-Allow-Headers`, `Content-Type`);
+  res.header(`Access-Control-Allow-Headers`, "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
@@ -44,7 +45,7 @@ async function startServer() {
   // });
   app.use("/api/QuanLyNguoiDung", accountRouter);
   app.use("/api/QuanLyPhim", flimRouter);
-  app.use("/api/", bannerRouter);
+  app.use("/api", bannerRouter);
   app.use("/api",router)
   // Set up Swagger middleware
   swaggerSetup(app);
