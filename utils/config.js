@@ -2,6 +2,7 @@ import fs from "fs";
 import jwt  from 'jsonwebtoken';
 
 export const kiemTra = (req, res, next) => {
+  console.log(req.headers)
   const authHeader = req.headers["authorization"];
   // bearer  
   const token = authHeader && authHeader.split(" ")[1];
