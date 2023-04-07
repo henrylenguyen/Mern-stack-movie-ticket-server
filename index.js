@@ -2,20 +2,21 @@ import express from "express";
 import connectToDatabase from "./models/root.modal.js";
 import dotenv from "dotenv";
 import accountRouter from "./routes/user.routes.js";
+import flimRouter from "./routes/flim.routes.js";
 import swaggerSetup from "./swagger/swagger.js"; // import swaggerSetup từ file swagger.js
 import morgan from "morgan";
-import corsMiddleware from './utils/cors.js';
-import { fileURLToPath } from 'url';
+import corsMiddleware from "./utils/cors.js";
+import { fileURLToPath } from "url";
 dotenv.config();
 const app = express();
 const port = process.env.PORT;
 import bodyParser from "body-parser";
 import path from "path";
-import router from './routes/routes.js';
+import router from "./routes/routes.js";
 import flimRouter from "./routes/flim.routes.js";
 import bannerRouter from "./routes/banner.routes.js";
 const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(__filename);
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -36,16 +37,16 @@ async function startServer() {
 
   // Kết nối đến database trước khi khởi động ứng dụng
   await connectToDatabase();
-  
+
   // ------------------------SỬ DỤNG ROUTES--------------------------------------
- 
+
   // app.get('/', (req, res) => {
   //   res.sendFile(path.join(__dirname, 'token.html'));
   // });
   app.use("/api/QuanLyNguoiDung", accountRouter);
   app.use("/api/QuanLyPhim", flimRouter);
   app.use("/api/QuanLyBanner", bannerRouter);
-  app.use("/api",router)
+  app.use("/api", router);
   // Set up Swagger middleware
   swaggerSetup(app);
 
