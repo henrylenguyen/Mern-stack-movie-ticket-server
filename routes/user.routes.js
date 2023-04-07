@@ -12,7 +12,7 @@ import {
   timKiemNguoiDungPhanTrang,
 } from "../controllers/user.controller.js";
 import fs from "fs"
-import {kiemTra, kiemTraTokenNguoiDung} from "../utils/config.js";
+import {errorHandler, kiemTra, kiemTraTokenNguoiDung} from "../utils/config.js";
 
 
 const accountRouter = Router();
