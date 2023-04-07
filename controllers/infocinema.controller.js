@@ -1,7 +1,6 @@
-import categoryModel from "../models/category.model.js";
+import infocinemaModel from "../models/infocinemaModel.model.js";
 
-//Phân trang phim
-export const layDanhSachTheLoaiPhim = async (req, res, next) => {
+export const layDanhSachRapPhimPhanTrang = async (req, res, next) => {
   let page = req.query.soTrang;
   let PAGE_SIZE = req.query.SoPhanTuTrenTrang;
   if (page) {
@@ -13,7 +12,7 @@ export const layDanhSachTheLoaiPhim = async (req, res, next) => {
     page = parseInt(page);
     let soLuongBoQua = (page - 1) * PAGE_SIZE;
     try {
-      const total = await categoryModel.countDocuments({});
+      const total = await infocinemaModel.countDocuments({});
       if (soLuongBoQua >= total) {
         return res.json({
           content: {
@@ -31,7 +30,10 @@ export const layDanhSachTheLoaiPhim = async (req, res, next) => {
       } else if (total - soLuongBoQua < PAGE_SIZE) {
         soLuongPhanTuHienTai = total - soLuongBoQua;
       }
-      const data = await flimModel.find({}).skip(soLuongBoQua).limit(PAGE_SIZE);
+      const data = await infocinemaModel
+        .find({})
+        .skip(soLuongBoQua)
+        .limit(PAGE_SIZE);
       let tongSoTrang = Math.ceil(total / PAGE_SIZE);
       if (page > tongSoTrang) {
         return res.json({
@@ -59,8 +61,8 @@ export const layDanhSachTheLoaiPhim = async (req, res, next) => {
   }
 };
 
-export const layDanhSachTheLoai = (req, res, next) => {
-  categoryModel
+export const layDanhSachRap = (req, res, next) => {
+  infocinemaModel
     .find({})
     .then((data) => {
       res.json(data);
@@ -70,22 +72,36 @@ export const layDanhSachTheLoai = (req, res, next) => {
     });
 };
 
-export const themTheLoaiPhim = (req, res, next) => {
-  const ten = req.body.ten;
-  categoryModel
+export const themRapPhim = (req, res, next) => {
+  const maCumRap = req.body.maCumRap;
+  const tenCumRap = req.body.tenCumRap;
+  const diaChi = req.body.diaChi;
+  const danhSachRap = req.body.danhSachRap;
+  infocinemaModel
     .findOne({
-      $or: [{ ten: ten }],
+      $or: [
+        { maCumRap: maCumRap },
+        { tenCumRap: tenCumRap },
+        { diaChi: diaChi },
+        { danhSachRap: danhSachRap },
+      ],
     })
-    .then((category) => {
-      if (category) {
+    .then((infocinema) => {
+      if (infocinema) {
         // username hoặc email đã tồn tại, trả về thông báo tương ứng
-        if (category.ten === ten) {
-          res.status(400).json({ message: "Tên thể loại phim đã tồn tại" });
+        if (infocinema.maCumRap === maCumRap) {
+          res.status(400).json({ message: "Mã cụm rạp đã tồn tại" });
+        } else if (infocinema.tenCumRap === tenCumRap) {
+          res.status(400).json({ message: "Tên cụm rạp đã tồn tại" });
+        } else if (infocinema.diaChi === diaChi) {
+          res.status(400).json({ message: "Địa chỉ đã tồn tại" });
+        } else if (infocinema.danhSachRap === danhSachRap) {
+          res.status(400).json({ message: "Danh sách rạp phim đã tồn tại" });
         }
       } else {
       }
     })
-    .then((category) => {
+    .then((infocinema) => {
       res.json({ message: "Thêm mới thành công" });
     })
     .catch((error) => {
