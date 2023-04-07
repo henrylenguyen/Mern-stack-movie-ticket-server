@@ -1,20 +1,7 @@
-import bannerModel from "../models/banner.model.js";
-import flimModel from "../models/flim.model.js";
+import categoryModel from "../models/category.model.js";
 
-export const layDanhSachBanner = async (req, res, next) => {
-  try {
-    const data = await bannerModel
-      .find({}, { _id: 0 })
-      .populate({
-        path: "maPhim",
-        model: flimModel,
-        select: "-_id",
-      })
-      .lean(); // trả về kiểu js thuần để có thể map dữ liệu
-import bannerModel from "../models/banner.model.js";
-
-//------------------------------------------------PHÂN TRANG BANNER--------------------------------
-export const layDanhSachBannerPhanTrang = async (req, res, next) => {
+//Phân trang phim
+export const layDanhSachTheLoaiPhim = async (req, res, next) => {
   let page = req.query.soTrang;
   let PAGE_SIZE = req.query.SoPhanTuTrenTrang;
   if (page) {
@@ -26,7 +13,7 @@ export const layDanhSachBannerPhanTrang = async (req, res, next) => {
     page = parseInt(page);
     let soLuongBoQua = (page - 1) * PAGE_SIZE;
     try {
-      const total = await bannerModel.countDocuments({});
+      const total = await categoryModel.countDocuments({});
       if (soLuongBoQua >= total) {
         return res.json({
           content: {
@@ -44,10 +31,7 @@ export const layDanhSachBannerPhanTrang = async (req, res, next) => {
       } else if (total - soLuongBoQua < PAGE_SIZE) {
         soLuongPhanTuHienTai = total - soLuongBoQua;
       }
-      const data = await bannerModel
-        .find({})
-        .skip(soLuongBoQua)
-        .limit(PAGE_SIZE);
+      const data = await flimModel.find({}).skip(soLuongBoQua).limit(PAGE_SIZE);
       let tongSoTrang = Math.ceil(total / PAGE_SIZE);
       if (page > tongSoTrang) {
         return res.json({
@@ -74,9 +58,9 @@ export const layDanhSachBannerPhanTrang = async (req, res, next) => {
     }
   }
 };
-//------------------------------------------------LẤY DANH SÁCH BANNER--------------------------------
-export const layDanhSachBanner = (req, res, next) => {
-  bannerModel
+
+export const layDanhSachTheLoai = (req, res, next) => {
+  categoryModel
     .find({})
     .then((data) => {
       res.json(data);
@@ -85,40 +69,26 @@ export const layDanhSachBanner = (req, res, next) => {
       res.json("Lỗi");
     });
 };
-//------------------------------------------------THÊM BANNER MỚI--------------------------------
-export const themBanner = (req, res, next) => {
-  const maPhim = req.body.maPhim;
-  const hinhAnh = req.body.hinhAnh;
-  bannerModel
+
+export const themTheLoaiPhim = (req, res, next) => {
+  const ten = req.body.ten;
+  categoryModel
     .findOne({
-      $or: [{ maPhim: maPhim }, { hinhAnh: hinhAnh }],
+      $or: [{ ten: ten }],
     })
-    .then((banner) => {
-      if (banner) {
+    .then((category) => {
+      if (category) {
         // username hoặc email đã tồn tại, trả về thông báo tương ứng
-        if (banner.maPhim === tenPhim) {
-          res.status(400).json({ message: "Mã phim đã tồn tại" });
-        } else {
-          res.status(400).json({ message: "Hình ảnh đã tồn tại" });
+        if (flim.ten === ten) {
+          res.status(400).json({ message: "Tên thể loại phim đã tồn tại" });
         }
       } else {
       }
     })
-    .then((banner) => {
+    .then((category) => {
       res.json({ message: "Thêm mới thành công" });
     })
     .catch((error) => {
       res.status(500).json({ message: "Lỗi" });
     });
-};
-    
-
-    res.json({
-      content: {
-        data: data,
-      },
-    });
-  } catch (err) {
-    res.json("Lỗi");
-  }
 };

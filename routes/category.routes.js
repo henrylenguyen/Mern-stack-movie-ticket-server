@@ -1,27 +1,21 @@
 import { Router } from "express";
-import { layDanhSachBanner } from "../controllers/banner.controller.js";
 
-
-const bannerRouter = Router();
+const categoryRouter = Router();
 
 // Lấy dữ liệu từ db
-
-bannerRouter.get("/layDanhSachBanner", layDanhSachBanner);
-
-import { Router } from "express";
-
-const bannerRouter = Router();
-
-// Lấy dữ liệu từ db
-
+categoryRouter.get("/layDanhSachTheLoaiPhim", layDanhSachTheLoaiPhim);
+categoryRouter.get(
+  "/DanhSachTheLoaiPhimPhanTrang",
+  layDanhSachTheLoaiPhimPhanTrang
+);
 // Gửi dữ liệu vào db
-
+categoryRouter.post("/themTheLoaiPhim", themTheLoaiPhim);
 // Cập nhật dữ liệu
 
-bannerRouter.put("/:id", (req, res, next) => {
+categoryRouter.put("/:id", (req, res, next) => {
   var id = req.params.id;
   var password = req.body.password;
-  bannerModel
+  categoryModel
     .findByIdAndUpdate(id, {
       password: password,
     })
@@ -35,9 +29,9 @@ bannerRouter.put("/:id", (req, res, next) => {
 
 // Xóa dữ liệu trong db
 
-bannerRouter.delete("/:id", (req, res, next) => {
+categoryRouter.delete("/:id", (req, res, next) => {
   const id = req.params.id;
-  bannerModel
+  categoryModel
     .deleteOne({
       _id: id,
     })
@@ -49,6 +43,4 @@ bannerRouter.delete("/:id", (req, res, next) => {
     });
 });
 
-export default bannerRouter;
-
-export default bannerRouter;
+export default categoryRouter;
