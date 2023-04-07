@@ -159,25 +159,19 @@ export const dangKy = (req, res, next) => {
 export const dangNhap = async (req, res, next) => {
   const { taiKhoan, matKhau } = req.body;
   try {
-    // console.log("Đang tìm user trong database");
     const user = await userModel.findOne({ taiKhoan });
-    // console.log("Đã tìm thấy: ", user);
     if (!user) {
       return res.status(401).json({ message: "Tài khoản không tồn tại" });
     }
-    // console.log("Đang giải mã...");
     const isMatch = bcrypt.compareSync(matKhau, user.matKhau);
-    // console.log("Passwords compared: ", isMatch);
     if (!isMatch) {
       return res.status(401).json({ message: "Mật khẩu không đúng" });
     }
-    // console.log("Tạo token gửi lên client...");
     const token = jwt.sign(
       { userId: user._id, taiKhoan: user.taiKhoan },
       process.env.TOKEN_USER,
       { expiresIn: "7d" }
     );
-    // console.log("Token generated: ", token);
     res.status(200).json({ message: "Đăng nhập thành công", content:{
       token
     } });
@@ -185,6 +179,7 @@ export const dangNhap = async (req, res, next) => {
     res.status(500).json({ message: "Lỗi" });
   }
 };
+
 
 
 

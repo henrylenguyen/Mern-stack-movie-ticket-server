@@ -15,22 +15,28 @@ export const kiemTra = (req, res, next) => {
     } catch (error) {
       throw new Error("Không đọc được key public");
     }
-    jwt.verify(
-      token,
-      cert,
-      { algorithms: ["RS256"] },
-      function (err, payload) {
-        if (err) {
-          res.status(403).json("Token không hợp lệ");
+    try {
+      jwt.verify(
+        token,
+        cert,
+        { algorithms: ["RS256"] },
+        function (err, payload) {
+          if (err) {
+            return res.status(403).json("Token không hợp lệ");
+          }
+          next();
         }
-        next();
-      }
-    );
+      );
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json("Lỗi xác thực token");
+    }    
   } catch (error) {
     console.error(error);
-    res.status(500).json("Lỗi");
+    return res.status(500).json("Lỗi");
   }
 }
+
 
 
 export const kiemTraTokenNguoiDung = async (req, res, next) => {
@@ -48,4 +54,10 @@ export const kiemTraTokenNguoiDung = async (req, res, next) => {
     return res.status(500).json({ message: "Lỗi" });
   }
 };
-
+export const errorHandler = (err, req, res, next) => {
+  if (err.name === "JsonWebTokenError") {
+    return res.status(403).json("Token không hợp lệ");
+  }
+  console.error(err);
+  res.status(500).json("Lỗi xác thực token");
+};
