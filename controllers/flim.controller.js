@@ -326,6 +326,84 @@ export const layDanhSachPhimHot = async (req, res, next) => {
   }
 };
 
+// ----------------------------------LẤY THÔNG TIN PHIM ---------------------------------------
+export const layThongTinPhim = async (req, res, next) => {
+  try {
+    const  maPhim  = parseInt(req.query.maPhim);
+    
+    const data = await flimModel
+      .findOne({ maPhim }, { _id: 0 })
+      .populate({
+        path: "thongTinPhim",
+        model: flimInforModel,
+        select: "-_id",
+      })
+      .populate({
+        path: "thongTinPhim",
+        populate: {
+          path: "theLoai",
+          model: flimGenreModel,
+          select: "-_id",
+        },
+      })
+      .lean(); // trả về kiểu js thuần để có thể map dữ liệu
+
+    if (!data) {
+      return res.status(404).json({
+        message: "Không tìm thấy thông tin phim",
+      });
+    }
+
+    const { thongTinPhim, ...rest } = data; // bóc tách mảng `theLoai` và các thuộc tính khác của đối tượng `data`
+    const { theLoai, _id, ...rest2 } = thongTinPhim; // tiếp tục bóc tách mảng thongTinPhim để lấy ra theLoai
+    const tenTheLoai = theLoai.map(({ ten }) => ten);
+
+    const newData = {
+      ...rest,
+      thongTinPhim: {
+        ...rest2,
+      },
+      tenTheLoai,
+    };
+
+    res.json({
+      content: {
+        data: newData,
+      },
+    });
+  } catch (err) {
+    res.json("Lỗi");
+  }
+};
+
+
+
+// ---------------------------------XÓA PHIM ---------------------------------------------------
+export const xoaPhim = (req, res, next) => {
+  const maPhim = parseInt(req.query.maPhim);
+  console.log(maPhim)
+  flimModel.findOne({ maPhim }, (err, flim) => {
+    if (err) {
+      console.log(err)
+      res.json("Lỗi");
+    } else {
+      if (!flim) {
+        res.json("Không tìm thấy mã phim cần xóa trong cơ sở dữ liệu.");
+      } else {
+        flimModel.deleteOne({ maPhim }, (err) => {
+          if (err) {
+            res.json("Lỗi");
+          } else {
+            res.status(200).json("Xóa phim thành công");
+          }
+        });
+      }
+    }
+  });
+};
+
+
+// -------------------------------- THÊM PHIM ----------------------------------
 export const themPhim = (req, res, next) => {
   const tenPhim = req.body.tenPhim;
   const biDanh = req.body.biDanh;

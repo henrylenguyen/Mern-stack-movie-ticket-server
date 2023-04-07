@@ -13,6 +13,7 @@ import bodyParser from "body-parser";
 import path from "path";
 import router from './routes/routes.js';
 import flimRouter from "./routes/flim.routes.js";
+import bannerRouter from "./routes/banner.routes.js";
 const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
 // parse application/x-www-form-urlencoded
@@ -43,6 +44,7 @@ async function startServer() {
   // });
   app.use("/api/QuanLyNguoiDung", accountRouter);
   app.use("/api/QuanLyPhim", flimRouter);
+  app.use("/api/QuanLyBanner", bannerRouter);
   app.use("/api",router)
   // Set up Swagger middleware
   swaggerSetup(app);

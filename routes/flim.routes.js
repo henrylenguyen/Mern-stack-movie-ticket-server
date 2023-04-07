@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { layDanhSachPhim, layDanhSachPhimHot, layDanhSachPhimPhanTrang, layDanhSachPhimSapChieu, layDanhSachPhimSapChieuPhanTrang } from './../controllers/flim.controller.js';
-import { kiemTra } from "../utils/config.js";
+import { layDanhSachPhim, layDanhSachPhimHot, layDanhSachPhimPhanTrang, layDanhSachPhimSapChieu, layDanhSachPhimSapChieuPhanTrang, layThongTinPhim, xoaPhim } from './../controllers/flim.controller.js';
+import { kiemTra, kiemTraTokenNguoiDung } from "../utils/config.js";
 
 const flimRouter = Router();
 
@@ -15,5 +15,9 @@ flimRouter.get("/layDanhSachPhimSapChieu",kiemTra, layDanhSachPhimSapChieu);
 flimRouter.get("/layDanhSachPhimSapChieuPhanTrang", kiemTra,layDanhSachPhimSapChieuPhanTrang);
 // phim đang hot
 flimRouter.get("/layDanhSachPhimHot",kiemTra, layDanhSachPhimHot);
+// lấy thông tin phim
+flimRouter.get("/layThongTinPhim",kiemTra,kiemTraTokenNguoiDung,layThongTinPhim);
+// xóa phim
+flimRouter.delete("/xoaPhim",kiemTra,kiemTraTokenNguoiDung, xoaPhim);
 
 export default flimRouter;
