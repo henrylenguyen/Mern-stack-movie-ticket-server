@@ -4,18 +4,17 @@ import { Schema as _Schema, model } from "mongoose";
 const Schema = _Schema;
 
 // Khung suờn của data, để ràng buộc dữ liệu
-const BannerSchema = new Schema(
+const flimGenreSchema = new Schema(
   {
-    maPhim:String,
-    hinhAnh: String,
+    ten:String
   },
   {
-    collection: "Banner",
+    collection: "theLoaiPhim",
   }
 );
 
 // tên + schema
-const bannerModel = model("Banner", BannerSchema);
+const flimGenreModel = model("filmGenre", flimGenreSchema);
 
 
-export default bannerModel;
+export default flimGenreModel;

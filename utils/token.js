@@ -10,7 +10,8 @@ let tokenExpire = null;
 function generateToken() {
   const privateKey = fs.readFileSync('./key/private.pem');
   token = jwt.sign({ name: 'Lê Nguyễn Phương Thái' }, privateKey, { algorithm: 'RS256' });
-  tokenExpire = new Date().getTime() + 24 * 60 * 60 * 1000; // hết hạn sau 1 ngày
+  tokenExpire = new Date().getTime() + 6 * 30 * 24 * 60 * 60 * 1000; // hết hạn sau 6 tháng
+
 }
 
 function setTokenCookie(res) {

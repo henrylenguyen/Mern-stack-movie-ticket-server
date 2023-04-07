@@ -1,12 +1,15 @@
 import { Router } from "express";
+import { layDanhSachBanner } from "../controllers/banner.controller.js";
+import { kiemTra } from './../utils/config';
+
 
 const bannerRouter = Router();
 
 // Lấy dữ liệu từ db
 
-// Gửi dữ liệu vào db
+bannerRouter.get("/layDanhSachBanner",kiemTra, layDanhSachBanner);
 
-// Cập nhật dữ liệu
+
 
 bannerRouter.put("/:id", (req, res, next) => {
   var id = req.params.id;

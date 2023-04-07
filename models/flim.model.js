@@ -13,11 +13,14 @@ const flimSchema = new Schema(
     hinhAnh: String,
     moTa: String,
     ngayKhoiChieu: Date,
-    danhGia: Double,
+    danhGia: Number,
     hot: Boolean,
     dangChieu: Boolean,
     sapChieu: Boolean,
-    thongTinPhim: String,
+    thongTinPhim: {
+      type: String,
+      ref: "flimInfor"
+    },
   },
   {
     collection: "Phim",
