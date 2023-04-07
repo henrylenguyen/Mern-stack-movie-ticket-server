@@ -3,9 +3,13 @@ import { Router } from "express";
 const categoryRouter = Router();
 
 // Lấy dữ liệu từ db
-
+categoryRouter.get("/layDanhSachTheLoaiPhim", layDanhSachTheLoaiPhim);
+categoryRouter.get(
+  "/DanhSachTheLoaiPhimPhanTrang",
+  layDanhSachTheLoaiPhimPhanTrang
+);
 // Gửi dữ liệu vào db
-
+categoryRouter.post("/themTheLoaiPhim", themTheLoaiPhim);
 // Cập nhật dữ liệu
 
 categoryRouter.put("/:id", (req, res, next) => {
