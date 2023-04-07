@@ -782,7 +782,7 @@
         }
       }
     },
-    "/api/QuanLyPhim/LayDanhSachBanner": {
+    "/api/QuanLyBanner/LayDanhSachBanner": {
       "get": {
         "summary": "Lấy danh sách banner",
         "tags": [
