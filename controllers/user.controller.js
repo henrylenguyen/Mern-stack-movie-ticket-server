@@ -7,6 +7,7 @@ import jwt  from 'jsonwebtoken';
 export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
   let page = req.query.soTrang;
   let PAGE_SIZE = req.query.SoPhanTuTrenTrang;
+
   if (page) {
     // Lấy theo phân trang
     if (page < 1) {
@@ -73,6 +74,9 @@ export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
     } catch (err) {
       res.json("Lỗi");
     }
+  }
+  else {
+    res.status(400).json("Phải có số trang và số phần tử trên trang");
   }
 };
 
@@ -363,4 +367,5 @@ export const timKiemNguoiDungPhanTrang = async (req, res, next) => {
   } catch (err) {
     res.json({ message: "Lỗi", error: err });
   }
+  
 };

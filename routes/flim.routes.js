@@ -1,43 +1,19 @@
 import { Router } from "express";
+import { layDanhSachPhim, layDanhSachPhimHot, layDanhSachPhimPhanTrang, layDanhSachPhimSapChieu, layDanhSachPhimSapChieuPhanTrang } from './../controllers/flim.controller.js';
+import { kiemTra } from "../utils/config.js";
 
 const flimRouter = Router();
 
 // Lấy dữ liệu từ db
-flimRouter.get("/layDanhSachPhim", layDanhSachPhim);
-flimRouter.get("/DanhSachPhimPhanTrang", layDanhSachPhimPhanTrang);
-// Gửi dữ liệu vào db
-flimRouter.post("/themPhim", themPhim);
-// Cập nhật dữ liệu
+flimRouter.get("/layDanhSachPhim",kiemTra, layDanhSachPhim);
+// Phim phân trang
+flimRouter.get("/DanhSachPhimPhanTrang",kiemTra, layDanhSachPhimPhanTrang);
+// phim sắp chiếu
+flimRouter.get("/layDanhSachPhimSapChieu", layDanhSachPhimSapChieu);
 
-flimRouter.put("/:id", (req, res, next) => {
-  var id = req.params.id;
-  var password = req.body.password;
-  flimModel
-    .findByIdAndUpdate(id, {
-      password: password,
-    })
-    .then((data) => {
-      res.json("Cập nhật thành công");
-    })
-    .catch((err) => {
-      res.json("Lỗi");
-    });
-});
-
-// Xóa dữ liệu trong db
-
-flimRouter.delete("/:id", (req, res, next) => {
-  const id = req.params.id;
-  flimModel
-    .deleteOne({
-      _id: id,
-    })
-    .then((data) => {
-      res.json("Xóa thành công");
-    })
-    .catch((err) => {
-      res.json("Lỗi");
-    });
-});
+// phim sắp chiếu phân trang
+flimRouter.get("/layDanhSachPhimSapChieuPhanTrang", layDanhSachPhimSapChieuPhanTrang);
+// phim đang hot
+flimRouter.get("/layDanhSachPhimHot", layDanhSachPhimHot);
 
 export default flimRouter;
