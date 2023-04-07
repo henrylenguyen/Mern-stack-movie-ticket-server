@@ -16,7 +16,7 @@ flimRouter.get("/layDanhSachPhimSapChieuPhanTrang", kiemTra,layDanhSachPhimSapCh
 // phim đang hot
 flimRouter.get("/layDanhSachPhimHot",kiemTra, layDanhSachPhimHot);
 // lấy thông tin phim
-flimRouter.get("/layThongTinPhim",kiemTra,kiemTraTokenNguoiDung,layThongTinPhim);
+flimRouter.get("/layThongTinPhim",kiemTra,layThongTinPhim);
 // xóa phim
 flimRouter.delete("/xoaPhim",kiemTra,kiemTraTokenNguoiDung, xoaPhim);
 
