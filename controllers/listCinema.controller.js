@@ -1,7 +1,7 @@
-import categoryModel from "../models/category.model.js";
+import listCinemaModel from "../models/listCinema.model.js";
 
-//Phân trang phim
-export const layDanhSachTheLoaiPhim = async (req, res, next) => {
+//Phân trang rạp phim
+export const layDanhSachRapPhimPhanTrang = async (req, res, next) => {
   let page = req.query.soTrang;
   let PAGE_SIZE = req.query.SoPhanTuTrenTrang;
   if (page) {
@@ -13,7 +13,7 @@ export const layDanhSachTheLoaiPhim = async (req, res, next) => {
     page = parseInt(page);
     let soLuongBoQua = (page - 1) * PAGE_SIZE;
     try {
-      const total = await categoryModel.countDocuments({});
+      const total = await listCinemaModel.countDocuments({});
       if (soLuongBoQua >= total) {
         return res.json({
           content: {
@@ -31,7 +31,10 @@ export const layDanhSachTheLoaiPhim = async (req, res, next) => {
       } else if (total - soLuongBoQua < PAGE_SIZE) {
         soLuongPhanTuHienTai = total - soLuongBoQua;
       }
-      const data = await flimModel.find({}).skip(soLuongBoQua).limit(PAGE_SIZE);
+      const data = await listCinemaModel
+        .find({})
+        .skip(soLuongBoQua)
+        .limit(PAGE_SIZE);
       let tongSoTrang = Math.ceil(total / PAGE_SIZE);
       if (page > tongSoTrang) {
         return res.json({
@@ -59,8 +62,8 @@ export const layDanhSachTheLoaiPhim = async (req, res, next) => {
   }
 };
 
-export const layDanhSachTheLoai = (req, res, next) => {
-  categoryModel
+export const layDanhSachRap = (req, res, next) => {
+  listCinemaModel
     .find({})
     .then((data) => {
       res.json(data);
@@ -70,22 +73,21 @@ export const layDanhSachTheLoai = (req, res, next) => {
     });
 };
 
-export const themTheLoaiPhim = (req, res, next) => {
-  const ten = req.body.ten;
-  categoryModel
+export const themRapPhim = (req, res, next) => {
+  const danhSachRap = req.body.danhSachRap;
+  listCinemaModel
     .findOne({
-      $or: [{ ten: ten }],
+      $or: [{ danhSachRap: danhSachRap }],
     })
-    .then((category) => {
-      if (category) {
-        // username hoặc email đã tồn tại, trả về thông báo tương ứng
-        if (category.ten === ten) {
-          res.status(400).json({ message: "Tên thể loại phim đã tồn tại" });
+    .then((listCinema) => {
+      if (listCinema) {
+        if (flim.listCinema === listCinema) {
+          res.status(400).json({ message: "Phim đã tồn tại" });
         }
       } else {
       }
     })
-    .then((category) => {
+    .then((listCinema) => {
       res.json({ message: "Thêm mới thành công" });
     })
     .catch((error) => {

@@ -1,7 +1,6 @@
-import categoryModel from "../models/category.model.js";
+import infoflimModel from "../models/infoflim.model.js";
 
-//Phân trang phim
-export const layDanhSachTheLoaiPhim = async (req, res, next) => {
+export const layDanhSachThongTinPhim = async (req, res, next) => {
   let page = req.query.soTrang;
   let PAGE_SIZE = req.query.SoPhanTuTrenTrang;
   if (page) {
@@ -13,7 +12,7 @@ export const layDanhSachTheLoaiPhim = async (req, res, next) => {
     page = parseInt(page);
     let soLuongBoQua = (page - 1) * PAGE_SIZE;
     try {
-      const total = await categoryModel.countDocuments({});
+      const total = await infoflimModel.countDocuments({});
       if (soLuongBoQua >= total) {
         return res.json({
           content: {
@@ -59,8 +58,8 @@ export const layDanhSachTheLoaiPhim = async (req, res, next) => {
   }
 };
 
-export const layDanhSachTheLoai = (req, res, next) => {
-  categoryModel
+export const layThongTinPhim = (req, res, next) => {
+  infoflimModel
     .find({})
     .then((data) => {
       res.json(data);
@@ -70,22 +69,37 @@ export const layDanhSachTheLoai = (req, res, next) => {
     });
 };
 
-export const themTheLoaiPhim = (req, res, next) => {
-  const ten = req.body.ten;
-  categoryModel
+export const themThongTinPhim = (req, res, next) => {
+  const daoDien = req.body.daoDien;
+  const dienVien = req.body.dienVien;
+  const doTuoi = req.body.doTuoi;
+  const theLoai = req.body.theLoai;
+  infoflimModel
     .findOne({
-      $or: [{ ten: ten }],
+      $or: [
+        { daoDien: daoDien },
+        { dienVien: dienVien },
+        { doTuoi: doTuoi },
+        { theLoai: theLoai },
+      ],
     })
-    .then((category) => {
-      if (category) {
-        // username hoặc email đã tồn tại, trả về thông báo tương ứng
-        if (category.ten === ten) {
-          res.status(400).json({ message: "Tên thể loại phim đã tồn tại" });
-        }
+    .then((infoflim) => {
+      if (infoflim) {
+        // if (flim.tenPhim === tenPhim) {
+        //   res.status(400).json({ message: "Phim đã tồn tại" });
+        // } else if (flim.biDanh === biDanh) {
+        //   res.status(400).json({ message: "Bí danh đã tồn tại" });
+        // } else if (flim.trailer === trailer) {
+        //   res.status(400).json({ message: "Trailer đã tồn tại" });
+        // } else if (flim.hinhAnh === hinhAnh) {
+        //   res.status(400).json({ message: "Hình ảnh đã tồn tại" });
+        // } else if (flim.thongTinPhim === thongTinPhim) {
+        //   res.status(400).json({ message: "Thông tin phim đã tồn tại" });
+        // }
       } else {
       }
     })
-    .then((category) => {
+    .then((infoflim) => {
       res.json({ message: "Thêm mới thành công" });
     })
     .catch((error) => {
