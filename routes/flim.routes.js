@@ -9,11 +9,11 @@ flimRouter.get("/layDanhSachPhim",kiemTra, layDanhSachPhim);
 // Phim phân trang
 flimRouter.get("/DanhSachPhimPhanTrang",kiemTra, layDanhSachPhimPhanTrang);
 // phim sắp chiếu
-flimRouter.get("/layDanhSachPhimSapChieu", layDanhSachPhimSapChieu);
+flimRouter.get("/layDanhSachPhimSapChieu",kiemTra, layDanhSachPhimSapChieu);
 
 // phim sắp chiếu phân trang
-flimRouter.get("/layDanhSachPhimSapChieuPhanTrang", layDanhSachPhimSapChieuPhanTrang);
+flimRouter.get("/layDanhSachPhimSapChieuPhanTrang", kiemTra,layDanhSachPhimSapChieuPhanTrang);
 // phim đang hot
-flimRouter.get("/layDanhSachPhimHot", layDanhSachPhimHot);
+flimRouter.get("/layDanhSachPhimHot",kiemTra, layDanhSachPhimHot);
 
 export default flimRouter;
