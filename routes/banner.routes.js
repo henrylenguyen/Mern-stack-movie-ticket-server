@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { layDanhSachBanner } from "../controllers/banner.controller.js";
-import { kiemTra } from './../utils/config';
+import { kiemTra } from "../utils/config.js";
 
 
 const bannerRouter = Router();

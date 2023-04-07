@@ -44,7 +44,7 @@ async function startServer() {
   // });
   app.use("/api/QuanLyNguoiDung", accountRouter);
   app.use("/api/QuanLyPhim", flimRouter);
-  app.use("/api/QuanLyBanner", bannerRouter);
+  app.use("/api/", bannerRouter);
   app.use("/api",router)
   // Set up Swagger middleware
   swaggerSetup(app);
