@@ -1,7 +1,7 @@
 import roleModel from "../models/role.model.js";
 import userModel from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-import jwt  from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 // -------------------------------LẤY NGƯỜI DÙNG PHÂN TRANG-------------------------------------------
 export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
@@ -36,7 +36,8 @@ export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
         soLuongPhanTuHienTai = total - soLuongBoQua;
       }
       const data = await userModel
-        .find({}, { _id: 0, matKhau: 0}).select("-__v")
+        .find({}, { _id: 0, matKhau: 0 })
+        .select("-__v")
         .populate({
           path: "maLoaiNguoiDung",
           model: roleModel,
@@ -74,12 +75,10 @@ export const layDanhSachNguoiDungPhanTrang = async (req, res, next) => {
     } catch (err) {
       res.json("Lỗi");
     }
-  }
-  else {
+  } else {
     res.status(400).json("Phải có số trang và số phần tử trên trang");
   }
 };
-
 
 // -------------------------------LẤY TOÀN BỘ NGƯỜI DÙNG-------------------------------------------
 
@@ -92,7 +91,8 @@ export const layDanhSachNguoiDung = (req, res, next) => {
       path: "maLoaiNguoiDung",
       model: roleModel,
       select: "-_id ten",
-    }).select("-__v") // dùng để bỏ kí tự
+    })
+    .select("-__v") // dùng để bỏ kí tự
     .lean() // chuyển đổi dữ liệu thành đối tượng JavaScript thuần túy
     .then((data) => {
       data = data.map((user) => {
@@ -102,8 +102,8 @@ export const layDanhSachNguoiDung = (req, res, next) => {
       res.json({
         message: "Lấy dữ liệu thành công",
         content: {
-          data
-        }
+          data,
+        },
       });
     })
     .catch((err) => {
@@ -160,14 +160,19 @@ export const dangKy = (req, res, next) => {
     });
 };
 
-
-
 // ------------------------------------ĐĂNG NHẬP THÀNH VIÊN -------------------------------------
 
 export const dangNhap = async (req, res, next) => {
   const { taiKhoan, matKhau } = req.body;
   try {
-    const user = await userModel.findOne({ taiKhoan });
+    const user = await userModel
+      .findOne({ taiKhoan }, { _id: 0 })
+      .populate({
+        path: "maLoaiNguoiDung",
+        model: roleModel,
+        select: "-_id"
+      })
+   
     if (!user) {
       return res.status(401).json({ message: "Tài khoản không tồn tại" });
     }
@@ -180,16 +185,26 @@ export const dangNhap = async (req, res, next) => {
       process.env.TOKEN_USER,
       { expiresIn: "7d" }
     );
-    res.status(200).json({ message: "Đăng nhập thành công", content:{
-      token
-    } });
+    const response = {
+      message: "Đăng nhập thành công",
+      content: {
+        data: {
+          ...user.toObject(),
+          _id: undefined,
+          matKhau: undefined,
+          __v: undefined,
+          token,
+          maLoaiNguoiDung: user.maLoaiNguoiDung.ten,
+        },
+      },
+    };
+    
+    res.status(200).json(response);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Lỗi" });
   }
 };
-
-
-
 
 // -------------------------------CẬP NHẬT NGƯỜI DÙNG-------------------------------------------
 
@@ -226,49 +241,54 @@ export const capNhatThongTinNguoiDung = async (req, res, next) => {
 
 // -------------------------------CẬP NHẬT THÔNG TIN TÀI KHOẢN-----------------------------------
 
-
 // ------------------------------- XÓA NGƯỜI DÙNG-------------------------------------------------
 
-
-export const xoaNguoiDung = (req,res,next)=>{
+export const xoaNguoiDung = (req, res, next) => {
   const taiKhoan = req.query.taiKhoan;
 
-  userModel.deleteOne({
-    taiKhoan: taiKhoan
-  }).then(data=>{
-    res.status(200).json("Xóa thành công")
-  }).catch(err=>{
-    res.json("Lỗi")
-  })
-}
+  userModel
+    .deleteOne({
+      taiKhoan: taiKhoan,
+    })
+    .then((data) => {
+      res.status(200).json("Xóa thành công");
+    })
+    .catch((err) => {
+      res.json("Lỗi");
+    });
+};
 
 // -------------------------------- LẤY THÔNG TIN NGƯỜI DÙNG ------------------------------------
 
 export const layThongTinNguoiDung = async (req, res, next) => {
   const taiKhoan = req.query.taiKhoan;
   try {
-  const user = await userModel.findOne({ taiKhoan }, { _id: 0, matKhau: 0 }).select("-__v") ;
-  if (!user) {
-  return res.status(404).json({ message: "Không tìm thấy người dùng" });
-  }
-  res.json(user);
+    const user = await userModel
+      .findOne({ taiKhoan }, { _id: 0, matKhau: 0 })
+      .select("-__v");
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    }
+    res.json(user);
   } catch (error) {
-  // console.error("Error occurred: ", error);
-  res.status(500).json({ message: "Lỗi" });
+    // console.error("Error occurred: ", error);
+    res.status(500).json({ message: "Lỗi" });
   }
-  };
+};
 // -------------------------------- LẤY THÔNG TIN TÀI KHOẢN ĐANG ĐĂNG NHẬP ------------------------------------
 
 export const layThongTinTaiKhoan = async (req, res, next) => {
   const userId = req.userData.userId;
   try {
-    const user = await userModel.findById(userId, { _id: 0, matKhau: 0 }).select("-__v") ;
+    const user = await userModel
+      .findById(userId, { _id: 0, matKhau: 0 })
+      .select("-__v");
     if (!user) {
       return res.status(404).json({ message: "Không tìm thấy người dùng" });
     }
     res.status(200).json({
       message: "Lấy thông tin thành công",
-      content: user
+      content: user,
     });
   } catch (error) {
     console.error("Error occurred: ", error);
@@ -298,7 +318,7 @@ export const timKiemNguoiDung = async (req, res, next) => {
           model: roleModel,
           select: "-_id ten",
         })
-        .select("-__v") 
+        .select("-__v")
         .lean();
     }
     data = data.map((user) => {
@@ -315,7 +335,6 @@ export const timKiemNguoiDung = async (req, res, next) => {
 };
 
 // ------------------------------- TÌM KIẾM NGƯỜI DÙNG PHÂN TRANG --------------------------------
-
 
 export const timKiemNguoiDungPhanTrang = async (req, res, next) => {
   const page = req.query.soTrang;
@@ -370,5 +389,4 @@ export const timKiemNguoiDungPhanTrang = async (req, res, next) => {
   } catch (err) {
     res.json({ message: "Lỗi", error: err });
   }
-  
 };
