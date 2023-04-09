@@ -14,6 +14,7 @@ import path from "path";
 import router from './routes/routes.js';
 import filmRouter from "./routes/film.routes.js";
 import bannerRouter from "./routes/banner.routes.js";
+import { layPhimTuDong } from "./controllers/film.controller.js";
 const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
 // parse application/x-www-form-urlencoded
@@ -49,7 +50,8 @@ async function startServer() {
   app.use("/api",router)
   // Set up Swagger middleware
   swaggerSetup(app);
-
+  // Lấy phim tự động
+  layPhimTuDong();
   // Khởi động ứng dụng
   app.listen(port, () => {
     console.log(

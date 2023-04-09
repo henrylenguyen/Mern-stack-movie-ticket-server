@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { layDanhSachPhim, layDanhSachPhimHot, layDanhSachPhimPhanTrang, layDanhSachPhimSapChieu, layDanhSachPhimSapChieuPhanTrang, layThongTinPhim, xoaPhim } from './../controllers/film.controller.js';
+import { layDanhSachPhim, layDanhSachPhimDangChieu, layDanhSachPhimDangChieuPhanTrang, layDanhSachPhimHot, layDanhSachPhimPhanTrang, layDanhSachPhimSapChieu, layDanhSachPhimSapChieuPhanTrang, layThongTinPhim, xoaPhim } from './../controllers/film.controller.js';
 import { kiemTra, kiemTraTokenNguoiDung } from "../utils/config.js";
 
 const filmRouter = Router();
@@ -19,5 +19,8 @@ filmRouter.get("/layDanhSachPhimHot",kiemTra, layDanhSachPhimHot);
 filmRouter.get("/layThongTinPhim",kiemTra,layThongTinPhim);
 // xóa phim
 filmRouter.delete("/xoaPhim",kiemTra,kiemTraTokenNguoiDung, xoaPhim);
-
+// lấy phim đang chiếu
+filmRouter.get("/layDanhSachPhimDangChieu",kiemTra, layDanhSachPhimDangChieu);
+// lấy phim đang chiếu phân trang
+filmRouter.get("/layDanhSachPhimDangChieuPhanTrang",kiemTra, layDanhSachPhimDangChieuPhanTrang);
 export default filmRouter;

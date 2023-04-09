@@ -7,6 +7,7 @@ const Schema = _Schema;
 const filmSchema = new Schema(
   {
     // _id sẽ tự động có
+    maPhim: Number,
     tenPhim: String,
     biDanh: String,
     trailer: String,
@@ -21,6 +22,7 @@ const filmSchema = new Schema(
       type: String,
       ref: "filmInfor"
     },
+    
   },
   {
     collection: "Phim",

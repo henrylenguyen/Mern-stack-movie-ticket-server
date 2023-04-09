@@ -743,7 +743,63 @@
         }
       }
     },
-
+    "/api/QuanLyPhim/layDanhSachPhimDangChieu": {
+      "get": {
+        "summary": "Lấy danh sách phim đang chiếu",
+        "tags": [
+          "QuanLyPhim"
+        ],
+        "security": [{
+          "bearerAuth": []
+        }],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách phim đang chiếu thành công"
+          }
+        }
+      }
+    },
+    "/api/QuanLyPhim/LayDanhSachPhimDangChieuPhanTrang": {
+      "get": {
+        "summary": "Lấy danh sách phim đang chiếu phân trang",
+        "tags": [
+          "QuanLyPhim"
+        ],
+        "security": [{
+          "bearerAuth": []
+        }],
+        "parameters": [{
+            "name": "soTrang",
+            "in": "query",
+            "description": "Số trang cần lấy dữ liệu",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          },
+          {
+            "name": "SoPhanTuTrenTrang",
+            "in": "query",
+            "description": "Số phần tử trên mỗi trang",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách phim đang chiếu phân trang thành công"
+          },
+          "400": {
+            "description": "Lỗi khi thiếu thông tin truy vấn"
+          },
+          "500": {
+            "description": "Lỗi server"
+          }
+        }
+      }
+    },
     "/api/QuanLyPhim/XoaPhim": {
       "delete": {
         "summary": "Xóa phim theo mã phim",
