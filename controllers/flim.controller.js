@@ -127,9 +127,7 @@ export const layDanhSachPhim = async (req, res, next) => {
     });
 
     res.json({
-      content: {
-        data: newData,
-      },
+      content:  newData,
     });
   } catch (err) {
     res.json("Lỗi");
@@ -173,9 +171,8 @@ export const layDanhSachPhimSapChieu = async (req, res, next) => {
     });
 
     res.json({
-      content: {
-        data: newData,
-      },
+      content:  newData,
+
     });
   } catch (err) {
     res.json("Lỗi");
@@ -317,9 +314,7 @@ export const layDanhSachPhimHot = async (req, res, next) => {
     });
 
     res.json({
-      content: {
-        data: newData,
-      },
+      content: newData,
     });
   } catch (err) {
     res.json("Lỗi");
@@ -367,9 +362,7 @@ export const layThongTinPhim = async (req, res, next) => {
     };
 
     res.json({
-      content: {
-        data: newData,
-      },
+      content: newData,
     });
   } catch (err) {
     res.json("Lỗi");

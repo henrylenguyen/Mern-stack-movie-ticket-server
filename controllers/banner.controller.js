@@ -14,9 +14,7 @@ export const layDanhSachBanner = async (req, res, next) => {
       .lean(); // trả về kiểu js thuần để có thể map dữ liệu
 
     res.json({
-      content: {
-        data,
-      },
+      content: data
     });
   } catch (err) {
     res.json("Lỗi");
