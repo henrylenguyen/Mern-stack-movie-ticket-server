@@ -15,7 +15,7 @@ export const layDanhSachBanner = async (req, res, next) => {
 
     res.json({
       content: {
-        data: data,
+        data,
       },
     });
   } catch (err) {
