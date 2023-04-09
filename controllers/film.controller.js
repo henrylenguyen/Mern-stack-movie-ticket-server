@@ -1,6 +1,6 @@
-import flimInforModel from "../models/filmInfor.model.js";
-import flimModel from "../models/flim.model.js";
-import flimGenreModel from "../models/genres.model.js";
+import filmInforModel from "../models/filmInfor.model.js";
+import filmModel from "../models/film.model.js";
+import filmGenreModel from "../models/genres.model.js";
 
 //Phân trang phim
 export const layDanhSachPhimPhanTrang = async (req, res, next) => {
@@ -16,7 +16,7 @@ export const layDanhSachPhimPhanTrang = async (req, res, next) => {
     page = parseInt(page);
     let soLuongBoQua = (page - 1) * PAGE_SIZE;
     try {
-      const total = await flimModel.countDocuments({});
+      const total = await filmModel.countDocuments({});
       if (soLuongBoQua >= total) {
         return res.json({
           content: {
@@ -34,18 +34,18 @@ export const layDanhSachPhimPhanTrang = async (req, res, next) => {
       } else if (total - soLuongBoQua < PAGE_SIZE) {
         soLuongPhanTuHienTai = total - soLuongBoQua;
       }
-      const data = await flimModel
+      const data = await filmModel
         .find({}, { _id: 0 })
         .populate({
           path: "thongTinPhim",
-          model: flimInforModel,
+          model: filmInforModel,
           select: "-_id",
         })
         .populate({
           path: "thongTinPhim",
           populate: {
             path: "theLoai",
-            model: flimGenreModel,
+            model: filmGenreModel,
             select: "-_id",
           },
         })
@@ -96,18 +96,18 @@ export const layDanhSachPhimPhanTrang = async (req, res, next) => {
 
 export const layDanhSachPhim = async (req, res, next) => {
   try {
-    const data = await flimModel
+    const data = await filmModel
       .find({}, { _id: 0 })
       .populate({
         path: "thongTinPhim",
-        model: flimInforModel,
+        model: filmInforModel,
         select: "-_id",
       })
       .populate({
         path: "thongTinPhim",
         populate: {
           path: "theLoai",
-          model: flimGenreModel,
+          model: filmGenreModel,
           select: "-_id",
         },
       })
@@ -137,21 +137,21 @@ export const layDanhSachPhim = async (req, res, next) => {
 // -------------------------------LẤY DANH SÁCH PHIM SẮP CHIẾU---------------
 export const layDanhSachPhimSapChieu = async (req, res, next) => {
   try {
-    const data = await flimModel
+    const data = await filmModel
       .find(
         { ngayKhoiChieu: { $gte: new Date() } }, // lọc phim có ngày khởi chiếu sau ngày hiện tại
         { _id: 0 }
       )
       .populate({
         path: "thongTinPhim",
-        model: flimInforModel,
+        model: filmInforModel,
         select: "-_id",
       })
       .populate({
         path: "thongTinPhim",
         populate: {
           path: "theLoai",
-          model: flimGenreModel,
+          model: filmGenreModel,
           select: "-_id",
         },
       })
@@ -194,7 +194,7 @@ export const layDanhSachPhimSapChieuPhanTrang = async (req, res, next) => {
     page = parseInt(page);
     let soLuongBoQua = (page - 1) * PAGE_SIZE;
     try {
-      const total = await flimModel.countDocuments({
+      const total = await filmModel.countDocuments({
         ngayKhoiChieu: { $gte: new Date() },
       });
       if (soLuongBoQua >= total) {
@@ -214,18 +214,18 @@ export const layDanhSachPhimSapChieuPhanTrang = async (req, res, next) => {
       } else if (total - soLuongBoQua < PAGE_SIZE) {
         soLuongPhanTuHienTai = total - soLuongBoQua;
       }
-      const data = await flimModel
+      const data = await filmModel
         .find({ ngayKhoiChieu: { $gte: new Date() } }, { _id: 0 })
         .populate({
           path: "thongTinPhim",
-          model: flimInforModel,
+          model: filmInforModel,
           select: "-_id",
         })
         .populate({
           path: "thongTinPhim",
           populate: {
             path: "theLoai",
-            model: flimGenreModel,
+            model: filmGenreModel,
             select: "-_id",
           },
         })
@@ -278,7 +278,7 @@ export const layDanhSachPhimSapChieuPhanTrang = async (req, res, next) => {
 
 export const layDanhSachPhimHot = async (req, res, next) => {
   try {
-    const data = await flimModel
+    const data = await filmModel
       .find(
         { hot: true }, // lọc phim đang hot
         { _id: 0 }
@@ -287,14 +287,14 @@ export const layDanhSachPhimHot = async (req, res, next) => {
       .limit(10) // lấy 10 bộ phim đầu tiên
       .populate({
         path: "thongTinPhim",
-        model: flimInforModel,
+        model: filmInforModel,
         select: "-_id",
       })
       .populate({
         path: "thongTinPhim",
         populate: {
           path: "theLoai",
-          model: flimGenreModel,
+          model: filmGenreModel,
           select: "-_id",
         },
       })
@@ -326,18 +326,18 @@ export const layThongTinPhim = async (req, res, next) => {
   try {
     const  maPhim  = parseInt(req.query.maPhim);
     
-    const data = await flimModel
+    const data = await filmModel
       .findOne({ maPhim }, { _id: 0 })
       .populate({
         path: "thongTinPhim",
-        model: flimInforModel,
+        model: filmInforModel,
         select: "-_id",
       })
       .populate({
         path: "thongTinPhim",
         populate: {
           path: "theLoai",
-          model: flimGenreModel,
+          model: filmGenreModel,
           select: "-_id",
         },
       })
@@ -375,15 +375,15 @@ export const layThongTinPhim = async (req, res, next) => {
 export const xoaPhim = (req, res, next) => {
   const maPhim = parseInt(req.query.maPhim);
   console.log(maPhim)
-  flimModel.findOne({ maPhim }, (err, flim) => {
+  filmModel.findOne({ maPhim }, (err, film) => {
     if (err) {
       console.log(err)
       res.json("Lỗi");
     } else {
-      if (!flim) {
+      if (!film) {
         res.json("Không tìm thấy mã phim cần xóa trong cơ sở dữ liệu.");
       } else {
-        flimModel.deleteOne({ maPhim }, (err) => {
+        filmModel.deleteOne({ maPhim }, (err) => {
           if (err) {
             res.json("Lỗi");
           } else {
@@ -409,7 +409,7 @@ export const themPhim = (req, res, next) => {
   const dangChieu = req.body.dangChieu;
   const sapChieu = req.body.sapChieu;
   const thongTinPhim = req.body.thongTinPhim;
-  flimModel
+  filmModel
     .findOne({
       $or: [
         { tenPhim: tenPhim },
@@ -425,24 +425,24 @@ export const themPhim = (req, res, next) => {
         { thongTinPhim: thongTinPhim },
       ],
     })
-    .then((flim) => {
-      if (flim) {
+    .then((film) => {
+      if (film) {
         // username hoặc email đã tồn tại, trả về thông báo tương ứng
-        if (flim.tenPhim === tenPhim) {
+        if (film.tenPhim === tenPhim) {
           res.status(400).json({ message: "Phim đã tồn tại" });
-        } else if (flim.biDanh === biDanh) {
+        } else if (film.biDanh === biDanh) {
           res.status(400).json({ message: "Bí danh đã tồn tại" });
-        } else if (flim.trailer === trailer) {
+        } else if (film.trailer === trailer) {
           res.status(400).json({ message: "Trailer đã tồn tại" });
-        } else if (flim.hinhAnh === hinhAnh) {
+        } else if (film.hinhAnh === hinhAnh) {
           res.status(400).json({ message: "Hình ảnh đã tồn tại" });
-        } else if (flim.thongTinPhim === thongTinPhim) {
+        } else if (film.thongTinPhim === thongTinPhim) {
           res.status(400).json({ message: "Thông tin phim đã tồn tại" });
         }
       } else {
       }
     })
-    .then((flim) => {
+    .then((film) => {
       res.json({ message: "Thêm mới thành công" });
     })
     .catch((error) => {

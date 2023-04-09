@@ -4,7 +4,7 @@ import { Schema as _Schema, model } from "mongoose";
 const Schema = _Schema;
 
 // Khung suờn của data, để ràng buộc dữ liệu
-const flimSchema = new Schema(
+const filmSchema = new Schema(
   {
     // _id sẽ tự động có
     tenPhim: String,
@@ -19,7 +19,7 @@ const flimSchema = new Schema(
     sapChieu: Boolean,
     thongTinPhim: {
       type: String,
-      ref: "flimInfor"
+      ref: "filmInfor"
     },
   },
   {
@@ -29,6 +29,6 @@ const flimSchema = new Schema(
 
 // tên + schema
 
-const flimModel = model("flim", flimSchema);
+const filmModel = model("film", filmSchema);
 
-export default flimModel;
+export default filmModel;

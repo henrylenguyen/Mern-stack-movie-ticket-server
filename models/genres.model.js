@@ -4,7 +4,7 @@ import { Schema as _Schema, model } from "mongoose";
 const Schema = _Schema;
 
 // Khung suờn của data, để ràng buộc dữ liệu
-const flimGenreSchema = new Schema(
+const filmGenreSchema = new Schema(
   {
     ten:String
   },
@@ -14,7 +14,7 @@ const flimGenreSchema = new Schema(
 );
 
 // tên + schema
-const flimGenreModel = model("filmGenre", flimGenreSchema);
+const filmGenreModel = model("filmGenre", filmGenreSchema);
 
 
-export default flimGenreModel;
+export default filmGenreModel;

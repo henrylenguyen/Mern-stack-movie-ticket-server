@@ -12,7 +12,7 @@ const port = process.env.PORT;
 import bodyParser from "body-parser";
 import path from "path";
 import router from './routes/routes.js';
-import flimRouter from "./routes/flim.routes.js";
+import filmRouter from "./routes/film.routes.js";
 import bannerRouter from "./routes/banner.routes.js";
 const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
@@ -44,7 +44,7 @@ async function startServer() {
   //   res.sendFile(path.join(__dirname, 'token.html'));
   // });
   app.use("/api/QuanLyNguoiDung", accountRouter);
-  app.use("/api/QuanLyPhim", flimRouter);
+  app.use("/api/QuanLyPhim", filmRouter);
   app.use("/api/QuanLyBanner", bannerRouter);
   app.use("/api",router)
   // Set up Swagger middleware

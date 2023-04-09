@@ -31,7 +31,7 @@ export const layDanhSachTheLoaiPhim = async (req, res, next) => {
       } else if (total - soLuongBoQua < PAGE_SIZE) {
         soLuongPhanTuHienTai = total - soLuongBoQua;
       }
-      const data = await flimModel.find({}).skip(soLuongBoQua).limit(PAGE_SIZE);
+      const data = await filmModel.find({}).skip(soLuongBoQua).limit(PAGE_SIZE);
       let tongSoTrang = Math.ceil(total / PAGE_SIZE);
       if (page > tongSoTrang) {
         return res.json({
@@ -79,7 +79,7 @@ export const themTheLoaiPhim = (req, res, next) => {
     .then((category) => {
       if (category) {
         // username hoặc email đã tồn tại, trả về thông báo tương ứng
-        if (flim.ten === ten) {
+        if (film.ten === ten) {
           res.status(400).json({ message: "Tên thể loại phim đã tồn tại" });
         }
       } else {

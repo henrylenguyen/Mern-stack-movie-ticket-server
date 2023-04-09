@@ -6,7 +6,10 @@ const Schema = _Schema;
 // Khung suờn của data, để ràng buộc dữ liệu
 const BannerSchema = new Schema(
   {
-    maPhim:String,
+    maPhim:{
+      type: String,
+      ref: "filmInfor"
+    },
     hinhAnh: String,
   },
   {
