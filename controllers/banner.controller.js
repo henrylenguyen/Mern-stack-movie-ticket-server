@@ -7,7 +7,7 @@ export const layDanhSachBanner = async (req, res, next) => {
     const data = await bannerModel
       .find({}, { _id: 0 })
       .populate({
-        path: "maPhim",
+        path: "thongTinBanner",
         model: flimModel,
         select: "-_id",
       })
